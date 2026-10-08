@@ -4,7 +4,6 @@ import { IntroBand } from "@/components/IntroBand";
 import { TransformationCarousel } from "@/components/TransformationCarousel";
 import { Paths } from "@/components/Paths";
 import { ShopPreview } from "@/components/ShopPreview";
-import { PriceTable } from "@/components/PriceTable";
 import { Testimonials } from "@/components/Testimonials";
 import { getFeaturedGallery } from "@/data/gallery";
 import { getFeaturedProducts } from "@/data/products";
@@ -26,7 +25,6 @@ export default function HomePage() {
       <TransformationCarousel items={gallery} />
       <Paths />
       <ShopPreview products={products} />
-      <PriceTable />
       <Testimonials />
     </>
   );

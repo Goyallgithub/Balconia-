@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  CATEGORY_LABELS,
+  PLANT_SUBCATEGORY_LABELS,
   getProduct,
   getProducts,
   getRelatedProducts,
 } from "@/data/products";
-import { getGalleryByProduct } from "@/data/gallery";
-import { SoftImage } from "@/components/SoftImage";
 import { ProductCard } from "@/components/ProductCard";
-import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { ProductGallery } from "@/components/ProductGallery";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { formatINR } from "@/lib/format";
 
@@ -38,7 +38,6 @@ export default function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const related = getRelatedProducts(product.slug);
-  const seenIn = getGalleryByProduct(product.slug);
   const off =
     product.compareAtPrice && product.compareAtPrice > product.price
       ? Math.round(
@@ -72,29 +71,33 @@ export default function ProductPage({ params }: Props) {
       />
 
       <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-10 md:grid-cols-2 md:gap-14 md:px-8 md:py-16">
-        <div className="relative aspect-[4/5] overflow-hidden bg-paper-2">
-          <SoftImage
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
-            filename={`${product.slug}-1.jpg`}
-          />
-          {product.isDiwali ? (
-            <span className="furniture absolute left-3 top-3 bg-marigold px-2 py-1 text-ink">
-              Diwali Edit
-            </span>
-          ) : null}
-        </div>
+        <ProductGallery
+          images={product.images}
+          name={product.name}
+          badge={
+            product.subcategory
+              ? PLANT_SUBCATEGORY_LABELS[product.subcategory]
+              : product.isDiwali
+                ? "Festive"
+                : null
+          }
+        />
 
         <div>
           <p className="furniture text-grey">
             <Link href="/shop" className="tap-inline">
               Shop
             </Link>{" "}
-            / {product.category}
+            /{" "}
+            <Link href={`/shop?cat=${product.category}`} className="tap-inline">
+              {CATEGORY_LABELS[product.category]}
+            </Link>
+            {product.subcategory ? (
+              <>
+                {" "}
+                / {PLANT_SUBCATEGORY_LABELS[product.subcategory]}
+              </>
+            ) : null}
           </p>
           <h1 className="display mt-3 text-[clamp(2rem,5vw,3.5rem)] tracking-[-0.04em]">
             {product.name}
@@ -162,35 +165,6 @@ export default function ProductPage({ params }: Props) {
           </details>
         </div>
       </div>
-
-      {seenIn.length > 0 ? (
-        <section className="border-t border-ink/10 px-4 py-16 md:px-8">
-          <div className="mx-auto max-w-[1200px]">
-            <h2 className="display text-3xl tracking-[-0.03em]">
-              Seen in these balconies
-            </h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              {seenIn.map((g) => (
-                <div key={g.slug}>
-                  <BeforeAfterSlider
-                    beforeSrc={g.before}
-                    afterSrc={g.after}
-                    beforeAlt={`${g.title} before`}
-                    afterAlt={`${g.title} after`}
-                    aspectClassName="aspect-[16/10]"
-                  />
-                  <Link
-                    href={`/gallery/${g.slug}`}
-                    className="mt-3 inline-block tracking-[-0.02em]"
-                  >
-                    {g.title} · {g.city}
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : null}
 
       {related.length > 0 ? (
         <section className="border-t border-ink/10 bg-paper px-4 py-16 md:px-8">

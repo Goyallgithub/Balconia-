@@ -60,8 +60,8 @@ export function Hero() {
             </div>
 
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/80 md:text-[0.95rem]">
-              Before and after balcony makeovers, and a curated shop of lighting,
-              planters and seating, shipped across India.
+              Before and after balcony makeovers, plus plants, pots, lights,
+              decor and gifting — shipped across India.
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">

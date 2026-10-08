@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { SoftImage } from "@/components/SoftImage";
 import { SplitWords } from "@/components/SplitWords";
-import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 const PATHS = [
@@ -12,7 +11,7 @@ const PATHS = [
     index: "01",
     title: "Do it for me",
     italic: "designer visit, curated decor, full installation",
-    priceHint: `From ${formatINR(14999)}`,
+    priceHint: "Quote after photo review",
     href: "/book",
     cta: "Book a makeover",
     primary: true,
@@ -27,7 +26,7 @@ const PATHS = [
     index: "02",
     title: "I'll do it myself",
     italic: "tell us your balcony, get a shoppable list in minutes",
-    priceHint: "From ₹0 to get the list",
+    priceHint: "Shop the catalogue",
     href: "/diy",
     cta: "Get my list",
     primary: false,

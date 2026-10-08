@@ -47,9 +47,13 @@ export function ProductCard({ product, index = 0, className, priority }: Props) 
           style={{ transitionTimingFunction: "var(--ease)" }}
           filename={`${product.slug}-2.jpg`}
         />
-        {product.isDiwali ? (
+        {product.subcategory ? (
+          <span className="furniture absolute left-3 top-3 bg-plaster/95 px-2 py-1 text-ink">
+            {product.subcategory.replace("-", " ")}
+          </span>
+        ) : product.isDiwali ? (
           <span className="furniture absolute left-3 top-3 bg-marigold px-2 py-1 text-ink">
-            Diwali Edit
+            Festive
           </span>
         ) : null}
       </Link>
