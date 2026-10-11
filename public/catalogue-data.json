@@ -1,0 +1,1066 @@
+[
+  {
+    "id": "P001",
+    "name": "Bamboo Palm (Cane Palm)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P001.jpg"
+  },
+  {
+    "id": "P002",
+    "name": "Areca Palm - 3 Feet (7 inch pot)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P002.jpg"
+  },
+  {
+    "id": "P003",
+    "name": "Aglaonema Red",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P003.jpg"
+  },
+  {
+    "id": "P004",
+    "name": "Peace Lily",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P004.jpg"
+  },
+  {
+    "id": "P005",
+    "name": "Passion Flower Creeper",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P005.jpg"
+  },
+  {
+    "id": "P006",
+    "name": "Golden Cypress (6 inch pot)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P006.jpg"
+  },
+  {
+    "id": "P007",
+    "name": "Bird of Paradise - Large Tub Plant",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P007.jpg"
+  },
+  {
+    "id": "P008",
+    "name": "Variegated Bird of Paradise - Large Tub Plant",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P008.jpg"
+  },
+  {
+    "id": "P009",
+    "name": "Dwarf Ixora (Pune Variety)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P009.jpg"
+  },
+  {
+    "id": "P010",
+    "name": "Anthurium Red",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P010.jpg"
+  },
+  {
+    "id": "P011",
+    "name": "Adenium (Desert Rose)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P011.jpg"
+  },
+  {
+    "id": "P012",
+    "name": "Poinsettia (Christmas Flower)",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P012.jpg"
+  },
+  {
+    "id": "P013",
+    "name": "Boston Fern Hanging Basket (Imported)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P013.jpg"
+  },
+  {
+    "id": "P014",
+    "name": "Croton Petra Multicolour (8 inch pot)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P014.jpg"
+  },
+  {
+    "id": "P015",
+    "name": "Fiddle Leaf Fig (Ficus Lyrata) - Large, 14 inch pot",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P015.jpg"
+  },
+  {
+    "id": "P016",
+    "name": "Pachira Money Tree - Large Braided (Imported)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P016.jpg"
+  },
+  {
+    "id": "P017",
+    "name": "Dianthus Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P017.jpg"
+  },
+  {
+    "id": "P018",
+    "name": "Nicodia Silver Leaf Flowering Plant (8 inch pot)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P018.jpg"
+  },
+  {
+    "id": "P019",
+    "name": "Petunia Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P019.jpg"
+  },
+  {
+    "id": "P020",
+    "name": "Metrosideros Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P020.jpg"
+  },
+  {
+    "id": "P021",
+    "name": "Dwarf Hibiscus (Gudhal) - 6 inch pot",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P021.jpg"
+  },
+  {
+    "id": "P022",
+    "name": "Mogra (Fragrant Arabian Jasmine)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P022.jpg"
+  },
+  {
+    "id": "P023",
+    "name": "Marigold (Genda) Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P023.jpg"
+  },
+  {
+    "id": "P024",
+    "name": "Rose Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P024.jpg"
+  },
+  {
+    "id": "P025",
+    "name": "Cypress Plant - 4 Feet",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P025.jpg"
+  },
+  {
+    "id": "P026",
+    "name": "Nicodia Silver Leaf Flowering Plant - Large (12 inch pot)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P026.jpg"
+  },
+  {
+    "id": "P027",
+    "name": "Dracaena Red (Cordyline)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P027.jpg"
+  },
+  {
+    "id": "P028",
+    "name": "Loropetalum Pink Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P028.jpg"
+  },
+  {
+    "id": "P029",
+    "name": "Kalanchoe Flowering Succulent",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P029.jpg"
+  },
+  {
+    "id": "P030",
+    "name": "Ficus Christina - Large (14 inch pot)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P030.jpg"
+  },
+  {
+    "id": "P031",
+    "name": "Dracaena Golden",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P031.jpg"
+  },
+  {
+    "id": "P032",
+    "name": "Aglaonema White (Snow White)",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P032.jpg"
+  },
+  {
+    "id": "P033",
+    "name": "Fiddle Leaf Fig (Ficus Lyrata) - 6 inch pot",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P033.jpg"
+  },
+  {
+    "id": "P034",
+    "name": "Rubber Plant (Ficus Elastica) - 6 inch pot",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P034.jpg"
+  },
+  {
+    "id": "P035",
+    "name": "Aglaonema Butterfly",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P035.jpg"
+  },
+  {
+    "id": "P036",
+    "name": "Pachira Money Tree - Small Braided",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P036.jpg"
+  },
+  {
+    "id": "P037",
+    "name": "Philodendron Birkin (6 inch pot)",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P037.jpg"
+  },
+  {
+    "id": "P038",
+    "name": "Aglaonema Pink",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P038.jpg"
+  },
+  {
+    "id": "P039",
+    "name": "Chamaedorea Palm (Parlour Palm)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P039.jpg"
+  },
+  {
+    "id": "P040",
+    "name": "Desi Paan (Betel Leaf) Plant",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P040.jpg"
+  },
+  {
+    "id": "P041",
+    "name": "White Bird of Paradise (Strelitzia Nicolai)",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P041.jpg"
+  },
+  {
+    "id": "P042",
+    "name": "Variegated Money Plant Hanging Basket",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P042.jpg"
+  },
+  {
+    "id": "P043",
+    "name": "Money Plant N'Joy Hanging Basket",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P043.jpg"
+  },
+  {
+    "id": "P044",
+    "name": "Dracaena White Milky",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P044.jpg"
+  },
+  {
+    "id": "P045",
+    "name": "Guldaudi (Chrysanthemum) Flowering Plant",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P045.jpg"
+  },
+  {
+    "id": "P046",
+    "name": "Green Money Plant Hanging Basket",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P046.jpg"
+  },
+  {
+    "id": "P047",
+    "name": "Peace Lily in Water (Hydroponic)",
+    "category": "plants",
+    "detail": "Indoor",
+    "size": "",
+    "image": "assets/products/P047.jpg"
+  },
+  {
+    "id": "P048",
+    "name": "Snake Plant (Sansevieria) - Imported",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P048.jpg"
+  },
+  {
+    "id": "P049",
+    "name": "Camellia Flowering Plant (Imported)",
+    "category": "plants",
+    "detail": "Outdoor",
+    "size": "",
+    "image": "assets/products/P049.jpg"
+  },
+  {
+    "id": "P050",
+    "name": "Dracaena Draco (Dragon Tree) - Imported, Medium",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P050.jpg"
+  },
+  {
+    "id": "P051",
+    "name": "Dracaena Draco (Dragon Tree) - Imported, Large Multi-Trunk",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P051.jpg"
+  },
+  {
+    "id": "P052",
+    "name": "Dracaena Draco (Dragon Tree) - Imported, Large",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P052.jpg"
+  },
+  {
+    "id": "P053",
+    "name": "Ficus Moclame 3-Step Topiary",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P053.jpg"
+  },
+  {
+    "id": "P054",
+    "name": "Ficus S-Shape Bonsai",
+    "category": "plants",
+    "detail": "Both",
+    "size": "",
+    "image": "assets/products/P054.jpg"
+  },
+  {
+    "id": "L001",
+    "name": "Wooden Ring 3-Light Cascading Pendant Light (Set of 3)",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L001.jpg"
+  },
+  {
+    "id": "L002",
+    "name": "Black & Gold Climbing Monkey Rope Wall Lamp with Vintage Bulb",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L002.jpg"
+  },
+  {
+    "id": "L003",
+    "name": "Golden Climbing Monkey Rope Wall Lamp with Vintage Bulb",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L003.jpg"
+  },
+  {
+    "id": "L004",
+    "name": "Marble Globe Pendant Light - Single",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L004.jpg"
+  },
+  {
+    "id": "L005",
+    "name": "Marble Globe 3-Light Cascading Pendant Light (Set of 3)",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L005.jpg"
+  },
+  {
+    "id": "L006",
+    "name": "Amber Diamond-Cut Glass 3-Light Cascading Pendant Light (Set of 3)",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L006.jpg"
+  },
+  {
+    "id": "L007",
+    "name": "Diya LED Hanging Decoration Light - Warm White (1 Foot)",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L007.jpg"
+  },
+  {
+    "id": "L008",
+    "name": "Multicolor LED Bulb String Light - 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L008.jpg"
+  },
+  {
+    "id": "L009",
+    "name": "Star LED Hanging Decoration Light - Warm White (25 cm)",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L009.jpg"
+  },
+  {
+    "id": "L010",
+    "name": "Multicolor Star LED String Light - 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L010.jpg"
+  },
+  {
+    "id": "L011",
+    "name": "Crystal Bulb Cluster LED String Light - Warm White, 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L011.jpg"
+  },
+  {
+    "id": "L012",
+    "name": "Multicolor Crackle Ball LED String Light - 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L012.jpg"
+  },
+  {
+    "id": "L013",
+    "name": "Heart LED String Light - Warm & Cool Glow, 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L013.jpg"
+  },
+  {
+    "id": "L014",
+    "name": "Warm White LED String Light (Pixel Light) - 30 Meter",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L014.jpg"
+  },
+  {
+    "id": "L015",
+    "name": "Multicolor Ice Cube LED String Light - 10 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L015.jpg"
+  },
+  {
+    "id": "L016",
+    "name": "Warm White Bulb Curtain String Light - 12 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L016.jpg"
+  },
+  {
+    "id": "L017",
+    "name": "Multicolor Bell LED String Light - 12 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L017.jpg"
+  },
+  {
+    "id": "L018",
+    "name": "Green Leaf Vine Curtain LED Light - Warm White, 12 Feet",
+    "category": "lights",
+    "detail": "",
+    "size": "",
+    "image": "assets/products/L018.jpg"
+  },
+  {
+    "id": "DEC-001",
+    "name": "Round Gold Metal Accent Table with Wooden Top",
+    "category": "decor",
+    "detail": "Furniture",
+    "size": "30 cm (Dia) x 60 cm (H)",
+    "image": "assets/products/DEC-001.jpg"
+  },
+  {
+    "id": "DEC-002",
+    "name": "Square Marble Top Nesting Tables with Gold Frame (Set of 3)",
+    "category": "decor",
+    "detail": "Furniture",
+    "size": "Large 50x50x45 cm | Medium 40x40x40 cm | Small 30x30x35 cm",
+    "image": "assets/products/DEC-002.jpg"
+  },
+  {
+    "id": "DEC-003",
+    "name": "Gold Finish Metal Planter with Black Stand",
+    "category": "plants",
+    "detail": "Planters",
+    "size": "30 cm (Dia) x 60 cm (Total H)",
+    "image": "assets/products/DEC-003.jpg"
+  },
+  {
+    "id": "DEC-004",
+    "name": "Round Marble Top Nesting Tables with Gold Frame (Set of 3)",
+    "category": "decor",
+    "detail": "Furniture",
+    "size": "Large 40 cm Dia x 60 cm H | Medium 30 cm Dia x 50 cm H | Small 25 cm Dia x 40 cm H",
+    "image": "assets/products/DEC-004.jpg"
+  },
+  {
+    "id": "DEC-005",
+    "name": "Handcrafted Mosaic Glass Table Lamp",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "20 cm (Top Dia) x 15 cm (Base Dia) x 30 cm (H)",
+    "image": "assets/products/DEC-005.jpg"
+  },
+  {
+    "id": "DEC-006",
+    "name": "Antique Brass Finish Leopard Sculptures (Set of 2)",
+    "category": "decor",
+    "detail": "Showpieces & Figurines",
+    "size": "60 cm (L) x 12 cm (W) x 30 cm (H)",
+    "image": "assets/products/DEC-006.jpg"
+  },
+  {
+    "id": "DEC-007",
+    "name": "Classic Turned Wood Table Lamp with Fabric Shade",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "25 cm (Shade Dia) x 18 cm (Base Dia) x 45 cm (Total H)",
+    "image": "assets/products/DEC-007.jpg"
+  },
+  {
+    "id": "DEC-008",
+    "name": "Wooden Tripod Table Lamp with Fabric Shade",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "25 cm (Shade Dia) x 28 cm (Base W) x 45 cm (Total H)",
+    "image": "assets/products/DEC-008.jpg"
+  },
+  {
+    "id": "DEC-009",
+    "name": "Golden Brass Finish Tiger Figurine",
+    "category": "decor",
+    "detail": "Showpieces & Figurines",
+    "size": "50 cm (L) x 12 cm (W) x 18 cm (H)",
+    "image": "assets/products/DEC-009.jpg"
+  },
+  {
+    "id": "DEC-010",
+    "name": "Black Metal Planters on Gold Wire Stands (Set of 2)",
+    "category": "plants",
+    "detail": "Planters",
+    "size": "Large 25 cm Pot Dia x 28 cm Base Dia x 60 cm H | Small 20 cm Pot Dia x 24 cm Base Dia x 50 cm H",
+    "image": "assets/products/DEC-010.jpg"
+  },
+  {
+    "id": "DEC-011",
+    "name": "Black Tabletop Planters with Gold Cage Stand (Set of 2)",
+    "category": "plants",
+    "detail": "Planters",
+    "size": "Large 20 cm Pot Dia x 18 cm Pot H x 24 cm Base Dia | Small 15 cm Pot Dia x 15 cm Pot H x 20 cm Base Dia",
+    "image": "assets/products/DEC-011.jpg"
+  },
+  {
+    "id": "DEC-012",
+    "name": "Vintage Tripod Table Clock with Wooden Legs",
+    "category": "decor",
+    "detail": "Clocks",
+    "size": "20 cm (Dial Dia) x 24 cm (Base W) x 24 cm (Base D) x 52 cm (Total H)",
+    "image": "assets/products/DEC-012.jpg"
+  },
+  {
+    "id": "DEC-013",
+    "name": "Black Tripod Floor Lamp with 3 Wooden Shelves",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "35 cm (Shade Top Dia) x 25 cm (Shade H) x 40 cm (Base Dia) x 150 cm (Total H) | Shelves 20 / 28 / 40 cm",
+    "image": "assets/products/DEC-013.jpg"
+  },
+  {
+    "id": "DEC-014",
+    "name": "Gold Frame Floor Lamp with Marble Finish Shelves",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "35 cm (Shade Top Dia) x 25 cm (Shade H) x 32 cm (Base W) x 165 cm (Total H) | Shelves 25 x 25 cm",
+    "image": "assets/products/DEC-014.jpg"
+  },
+  {
+    "id": "DEC-015",
+    "name": "Boho Macramé Teepee with 2 Cushioned Stools",
+    "category": "furniture",
+    "detail": "Furniture",
+    "size": "140 cm (Base W) x 200 cm (Total H) | Top Sticks 60 cm each | Stools 30 cm Dia x 28 cm H (each)",
+    "image": "assets/products/DEC-015.jpg"
+  },
+  {
+    "id": "DEC-016",
+    "name": "Gold Tripod Floor Lamp with Marble Shelves & Wheels",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "45 cm (Shade Dia) x 50 cm (Base W) x 160 cm (Total H)",
+    "image": "assets/products/DEC-016.jpg"
+  },
+  {
+    "id": "DEC-017",
+    "name": "Lion Head Wall Fountain with Warm LED Lighting",
+    "category": "decor",
+    "detail": "Water Fountains",
+    "size": "50 cm (W) x 40 cm (D) x 120 cm (H)",
+    "image": "assets/products/DEC-017.jpg"
+  },
+  {
+    "id": "DEC-018",
+    "name": "Serene Buddha Face Waterfall Fountain with LED",
+    "category": "decor",
+    "detail": "Water Fountains",
+    "size": "60 cm (W) x 30 cm (D) x 120 cm (H)",
+    "image": "assets/products/DEC-018.jpg"
+  },
+  {
+    "id": "DEC-019",
+    "name": "Meditating Buddha Waterfall Fountain with LED",
+    "category": "decor",
+    "detail": "Water Fountains",
+    "size": "40 cm (W) x 30 cm (D) x 90 cm (H) | Available in Silver-Grey and Antique Gold finish",
+    "image": "assets/products/DEC-019.jpg"
+  },
+  {
+    "id": "DEC-020",
+    "name": "Hut Style Metal Plant Stand with Wooden Roof",
+    "category": "plants",
+    "detail": "Planters",
+    "size": "80 cm (W) x 40 cm (D) x 150 cm (H)",
+    "image": "assets/products/DEC-020.jpg"
+  },
+  {
+    "id": "DEC-021",
+    "name": "Foldable Wooden Slatted Lounge Chair with Hand-Painted Headrest",
+    "category": "furniture",
+    "detail": "Furniture",
+    "size": "50 cm (W) x 90 cm (D) x 100 cm (H)",
+    "image": "assets/products/DEC-021.jpg"
+  },
+  {
+    "id": "DEC-022",
+    "name": "Cylindrical Patterned Floor Lamp",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "20 cm (Dia) x 90 cm (H) | Variants: Geometric Beige, Paisley Pattern, Fine Floral Beige, Floral Print",
+    "image": "assets/products/DEC-022.jpg"
+  },
+  {
+    "id": "DEC-023",
+    "name": "Ultra Soft Faux Fur Shaggy Rug – Charcoal Grey",
+    "category": "flooring",
+    "detail": "Rugs & Carpets",
+    "size": "150 cm (W) x 200 cm (L) x 4 cm (Pile) | Also available in other sizes",
+    "image": "assets/products/DEC-023.jpg"
+  },
+  {
+    "id": "DEC-024",
+    "name": "Brass Leaf Design Tealight Candle Holders (Set of 4)",
+    "category": "decor",
+    "detail": "Candle Holders",
+    "size": "22 cm (H) x 9 cm (Base Dia) – each",
+    "image": "assets/products/DEC-024.jpg"
+  },
+  {
+    "id": "DEC-025",
+    "name": "Tall Hammered Gold Metal Floor Vase",
+    "category": "decor",
+    "detail": "Vases",
+    "size": "20 cm (Dia) x 70 cm (H)",
+    "image": "assets/products/DEC-025.jpg"
+  },
+  {
+    "id": "DEC-026",
+    "name": "Embossed Floral Brass Finish Vase",
+    "category": "decor",
+    "detail": "Vases",
+    "size": "32 cm (Dia) x 40 cm (H)",
+    "image": "assets/products/DEC-026.jpg"
+  },
+  {
+    "id": "DEC-027",
+    "name": "Brass Finish Globe Table Lamp with Pleated Shade",
+    "category": "lights",
+    "detail": "Lighting",
+    "size": "35 cm (Shade Dia) x 25 cm (Base Dia) x 45 cm (Total H)",
+    "image": "assets/products/DEC-027.jpg"
+  },
+  {
+    "id": "C1",
+    "name": "Ivory Block Pattern Printed Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C1-1-v2.webp"
+  },
+  {
+    "id": "C2",
+    "name": "Ivory Wave Pattern Printed Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C2-1-v2.webp"
+  },
+  {
+    "id": "C3",
+    "name": "Grey Beige Traditional Medallion Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C3-1-v2.webp"
+  },
+  {
+    "id": "C4",
+    "name": "Navy Blue Floral Traditional Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C4-1-v2.webp"
+  },
+  {
+    "id": "C5",
+    "name": "Lavender Moon & Clouds Kids Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C5-1-v2.webp"
+  },
+  {
+    "id": "C6",
+    "name": "Brown Abstract Lines Modern Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C6-1-v2.webp"
+  },
+  {
+    "id": "C7",
+    "name": "Multicolour Floral Ivory Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C7-1-v2.webp"
+  },
+  {
+    "id": "C8",
+    "name": "Ivory Stripe Pattern Printed Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C8-1-v2.webp"
+  },
+  {
+    "id": "C9",
+    "name": "Ivory & Brown Persian Medallion Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C9-1-v2.webp"
+  },
+  {
+    "id": "C10",
+    "name": "Blue & Ivory Traditional Floral Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C10-1-v2.webp"
+  },
+  {
+    "id": "C11",
+    "name": "Navy & Beige Oriental Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C11-1-v2.webp"
+  },
+  {
+    "id": "C12",
+    "name": "Beige & Brown Persian Medallion Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C12-1-v2.webp"
+  },
+  {
+    "id": "C13",
+    "name": "Beige Carpet with Multicolour Tribal Border",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C13-1-v2.webp"
+  },
+  {
+    "id": "C14",
+    "name": "Ivory Modern Carpet with Black Line Border",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C14-1-v2.webp"
+  },
+  {
+    "id": "C15",
+    "name": "Blue Grey Floral Traditional Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C15-1-v2.webp"
+  },
+  {
+    "id": "C16",
+    "name": "Light Beige Damask Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C16-1-v2.webp"
+  },
+  {
+    "id": "C17",
+    "name": "Ivory & Tan Oriental Medallion Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C17-1-v2.webp"
+  },
+  {
+    "id": "C18",
+    "name": "Blue Ikat Floral Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C18-1-v2.webp"
+  },
+  {
+    "id": "C19",
+    "name": "Ivory Blue & Tan Traditional Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C19-1-v2.webp"
+  },
+  {
+    "id": "C20",
+    "name": "Multicolour Diamond Geometric Carpet",
+    "category": "flooring",
+    "detail": "Printed carpets",
+    "size": "5 × 7 ft (152 × 213 cm)",
+    "image": "assets/carpets/hd/C20-1-v2.webp"
+  },
+  {
+    "id": "FUR-001",
+    "name": "Black Metal Bistro Set - Table with 2 Chairs",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Table: 24 in (61 cm) diameter x 24 in (61 cm) height | Chair: 30 in (76 cm) height, 18 in (46 cm) width, 18 in (46 cm) depth",
+    "image": "assets/furniture/FUR-001-1.jpg"
+  },
+  {
+    "id": "FUR-002",
+    "name": "Grey Macramé Hanging Swing Chair with Cushion",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height 82 in (208 cm) | Back height 28 in (71 cm) | Seat height 16 in (41 cm) | Seat diameter 24 in (61 cm)",
+    "image": "assets/furniture/FUR-002-1.jpg"
+  },
+  {
+    "id": "FUR-003",
+    "name": "Wrought Iron Bistro Set with Carved Wood Panels - Table with 2 Chairs",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Chair: 33 in (84 cm) total height, 21 in (53 cm) width, 17 in (43 cm) seat height, 15 in (38 cm) seat diameter | Table: 24 in (61 cm) diameter, 28 in (71 cm) height, 18 in (46 cm) base diameter",
+    "image": "assets/furniture/FUR-003-1.jpg"
+  },
+  {
+    "id": "FUR-004",
+    "name": "Navy & Cream Cotton Rope Ottoman Stool - Set of 2",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Each stool: 14 in (36 cm) diameter x 16 in (41 cm) total height | Leg height 6 in (15 cm)",
+    "image": "assets/furniture/FUR-004-1.jpg"
+  },
+  {
+    "id": "FUR-005",
+    "name": "Natural Macramé Rope Pouf Stool with Beads - Set of 2",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Each stool: 14 in (36 cm) diameter x 16 in (41 cm) total height | Leg height 6 in (15 cm)",
+    "image": "assets/furniture/FUR-005-1.jpg"
+  },
+  {
+    "id": "FUR-007",
+    "name": "Dark Brown Wicker Patio Dining Set - Table with 4 Chairs",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Table: 24 in (61 cm) diameter x 28 in (71 cm) height | Chair: 32 in (81 cm) height, 24 in (61 cm) width, 22 in (56 cm) seat depth, 17 in (43 cm) seat height",
+    "image": "assets/furniture/FUR-007-1.jpg"
+  },
+  {
+    "id": "FUR-008",
+    "name": "Beige Rattan Hanging Egg Swing Chair with Stand",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height with stand 78 in (198 cm) | Chair height 52 in (132 cm) | Seat width 28 in (71 cm) | Seat from ground 26 in (66 cm) | Base diameter 42 in (107 cm)",
+    "image": "assets/furniture/FUR-008-1.jpg"
+  },
+  {
+    "id": "FUR-009",
+    "name": "Black Rattan Hanging Egg Swing Chair with Stand",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height with stand 78 in (198 cm) | Chair height 52 in (132 cm) | Base diameter 42 in (107 cm)",
+    "image": "assets/furniture/FUR-009-1.jpg"
+  },
+  {
+    "id": "FUR-010",
+    "name": "White Rattan Double Hanging Egg Chair with Stand",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height with stand 78 in (198 cm) | Chair height 46 in (117 cm) | Base diameter 42 in (107 cm)",
+    "image": "assets/furniture/FUR-010-1.jpg"
+  },
+  {
+    "id": "FUR-011",
+    "name": "Walnut Finish Round Pedestal Side Table - 24 inch",
+    "category": "decor",
+    "detail": "Furniture & accents",
+    "size": "Top diameter 24 in (61 cm) | Total height 24 in (61 cm)",
+    "image": "assets/furniture/FUR-011-1.jpg"
+  },
+  {
+    "id": "FUR-012",
+    "name": "Black Marble Finish Round Pedestal Side Table",
+    "category": "decor",
+    "detail": "Furniture & accents",
+    "size": "Top diameter 24 in (61 cm) | Base diameter 16 in (41 cm) | Total height 24 in (61 cm)",
+    "image": "assets/furniture/FUR-012-1.jpg"
+  },
+  {
+    "id": "FUR-013",
+    "name": "Wooden Tray Top Pedestal End Table - 16 inch",
+    "category": "decor",
+    "detail": "Furniture & accents",
+    "size": "Top diameter 16 in (41 cm) | Total height 22 in (56 cm)",
+    "image": "assets/furniture/FUR-013-1.jpg"
+  },
+  {
+    "id": "FUR-014",
+    "name": "Black Frame Cane Accent Armchair with Cushion",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height 32 in (81 cm) | Seat height 18 in (46 cm) | Width 22 in (56 cm) | Depth 20 in (51 cm)",
+    "image": "assets/furniture/FUR-014-1.jpg"
+  },
+  {
+    "id": "FUR-015",
+    "name": "Natural Wood Cane Accent Armchair with Cushion",
+    "category": "furniture",
+    "detail": "Furniture & accents",
+    "size": "Total height 32 in (81 cm) | Seat height 18 in (46 cm) | Width 22 in (56 cm) | Depth 20 in (51 cm)",
+    "image": "assets/furniture/FUR-015-1.jpg"
+  }
+]

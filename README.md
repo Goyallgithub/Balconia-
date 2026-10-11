@@ -1,38 +1,34 @@
 # Balconia
 
-Balcony makeovers and curated decor shop for India. Next.js 14 (App Router), Tailwind, UPI checkout, Vercel-ready.
+Frontend from the GPT export (static site in `public/`) plus a minimal Next.js API for AI balcony previews via Leonardo.AI (`nano-banana-2`).
 
-## Local setup
+## Local
 
 ```bash
 npm install
 cp .env.example .env.local
+# set LEONARDO_API_KEY in .env.local
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Environment
+Static pages: `/`, `/catalogue.html`, `/cart.html`, `/checkout.html`.  
+API: `POST /api/designs`, `POST /api/designs/:id/generate`, image routes under `/api/designs/:id/image`.
 
-Copy `.env.example` to `.env.local` (and set the same vars in Vercel):
+## Vercel
 
-| Variable | Purpose |
-| --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical URL (e.g. `https://balconia.in`) |
-| `NEXT_PUBLIC_WHATSAPP` | WhatsApp number with country code (e.g. `9198XXXXXXXX`) |
-| `NEXT_PUBLIC_UPI_ID` | UPI ID shown at checkout |
-| `NEXT_PUBLIC_UPI_NAME` | Payee name for UPI |
+1. Import this GitHub repo (Next.js).
+2. Add secret **`LEONARDO_API_KEY`** (server-only).
+3. Deploy.
 
-## Deploy on Vercel
+Customer photos are stored under `data/designs/` locally (gitignored). On Vercel the filesystem is ephemeral — for production persistence later, attach Blob/S3 storage.
 
-1. Import this GitHub repo in [Vercel](https://vercel.com/new).
-2. Framework preset: **Next.js** (auto-detected).
-3. Add the env vars above.
-4. Deploy.
+## Leonardo
 
-## Scripts
+- Model: `nano-banana-2`
+- Private 1024×1024 generation, `prompt_enhance: OFF`
+- Balcony photo = reference 1 (HIGH); up to 5 catalogue product photos as further references (MID)
+- Prices are calculated from catalogue `pricePaise` only — never by the image model
 
-- `npm run dev` — local development
-- `npm run build` — production build
-- `npm run start` — serve production build
-- `npm run lint` — ESLint
+Never put `LEONARDO_API_KEY` in browser code or `NEXT_PUBLIC_*` vars.
