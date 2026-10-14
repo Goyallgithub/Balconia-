@@ -1,0 +1,29 @@
+/* Balconia: warm paper, botanical depth and restrained brass accents. */
+:root{--balconia-paper:#f4eddd;--balconia-sage:#dfe7d7;--balconia-forest:#203c30;--balconia-brass:#d9bd7b}
+body.balconia-home{--cream:var(--balconia-paper);--ink:#294333;--olive:#60745b;--orange:#947027;--line:#d8daca;background:var(--balconia-paper)}
+.balconia-home header,.balconia-home .hero,.balconia-home #experiences,.balconia-home #layers,.balconia-home .faq{background:var(--balconia-paper)}
+.balconia-home .ribbon{background:var(--balconia-forest);color:#f8efda;border-color:#52634c}
+.balconia-home .ribbon i{color:var(--balconia-brass)}
+.balconia-home .discovery,.balconia-home .manifesto{background:var(--balconia-sage);border-color:#cbd5c2}
+.balconia-home .card{background:#faf4e6;border:1px solid #dce0ce;box-shadow:0 8px 25px #203c3009}
+.balconia-home #process{background:var(--balconia-forest);color:#f9f0de;border-color:#385444}
+.balconia-home #process .eyebrow,.balconia-home #process .steps article>span{color:var(--balconia-brass)}
+.balconia-home #process .section-head p,.balconia-home #process .steps p,.balconia-home #process .footnote{color:#d5dfcd}
+.balconia-home #process .process-photo,.balconia-home #process .process-product-collage{border:1px solid #69816a;box-shadow:0 8px 24px #0a21132b}
+.balconia-home #layers .layers article{border-color:#d3d8c5}
+.balconia-home .budget-section{background:#2d4a38;border-top:1px solid #49644b;border-bottom:1px solid #49644b}
+.balconia-home .budget-section .eyebrow{color:#e1c486}
+.balconia-home #quiz{background:var(--balconia-sage);border-color:#cad7bf;box-shadow:0 10px 35px #203c300c}
+.balconia-home #quiz input,.balconia-home #quiz select{background:#faf4e6;border-color:#bdcdb1}
+.balconia-home .faq details{border-color:#cbd4c0}
+body[data-page]{--paper:var(--balconia-paper);--green:var(--balconia-forest);--ink:#294333;--line:#d6dccb;--yellow:var(--balconia-brass);background:var(--balconia-paper)}
+body[data-page] .intro{background:var(--balconia-forest);color:#f9f0de;border-radius:22px;margin-top:32px;margin-bottom:28px;padding:38px 32px}
+body[data-page] .intro p{color:#d5dfcd}body[data-page] .intro .eyebrow{color:var(--balconia-brass)}
+body[data-page] .search-row input,body[data-page] select{background:#faf4e6}
+body[data-page] .photo-button{background:#e5e9dc}
+body[data-page] .cart-link{background:var(--balconia-forest);color:#f9f0de}
+body.balconia-home footer,body[data-page] footer{background:var(--balconia-forest);color:#f9f0de;border-color:#51654c}
+footer .footer-connect{color:#f9f0de;border-color:#53664f}footer .footer-connect a:hover{color:#e8cc8c}footer .footer-follow-label{color:#e1c486}
+footer .logo{display:inline-flex;background:var(--balconia-paper);padding:8px 12px;border-radius:14px}
+footer small{color:#d5dfcd}
+@media(max-width:600px){body[data-page] .intro{padding:28px 20px;margin-top:22px;border-radius:16px}footer .logo{padding:6px 10px}}

@@ -1,0 +1,376 @@
+{
+  "version": "delhi-ncr-2026-10-11-v1",
+  "hub": {
+    "name": "Wellington Estate, DLF Phase V, Sector 53, Gurugram",
+    "lat": 28.4480319,
+    "lng": 77.0958986,
+    "provider": "Esri ArcGIS World Geocoding Service",
+    "matchScore": 100,
+    "matchType": "POI",
+    "verifiedAt": "2026-10-11",
+    "source": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=Wellington%20Estate%20Gurugram&f=pjson&outFields=*"
+  },
+  "makeoverRadiusKm": 15,
+  "city": {
+    "id": "gurugram-city",
+    "names": [
+      "gurugram",
+      "gurgaon"
+    ],
+    "state": "Haryana",
+    "territoryFile": "gurugram-city.json",
+    "source": "https://data.opencity.in/dataset/gurugram-wards-map",
+    "originalProvider": "Esri India Living Atlas (as attributed by OpenCity)",
+    "sourceVintage": "2024 municipal wards, 35 polygons",
+    "retrievedAt": "2026-10-11",
+    "license": "Other (Public Domain), as listed by OpenCity",
+    "scope": "Municipal city footprint only; not the Gurugram district, GMDA planning region or Manesar municipality.",
+    "currentBoundaryVerified": false
+  },
+  "postalSources": [
+    "https://gurugram.gov.in/std-pin-codes/",
+    "https://www.indiapost.gov.in/sites/PostalCircles/Haryana/Lists/PostOffices/HR_Pincode_12Nov2020.pdf",
+    "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/FunctionalPOs.pdf"
+  ],
+  "pins": {
+    "122001": {
+      "localities": [
+        "Gurgaon H.O",
+        "Arjun Nagar",
+        "Basai Road",
+        "Gurgaon Sector 17",
+        "South City I",
+        "New Colony",
+        "Shivaji Nagar",
+        "Urban Estate",
+        "Sohna Adda",
+        "Khandsa Road"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122002": {
+      "localities": [
+        "DLF QE",
+        "Chakkarpur",
+        "Nathupur"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122003": {
+      "localities": [
+        "Gurgaon Sector 45",
+        "Jharsa",
+        "Gwal Pahari",
+        "Smaspur"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122004": {
+      "localities": [
+        "Narsinghpur",
+        "Khandsa",
+        "Kherki Daula"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122005": {
+      "localities": [
+        "Air Force"
+      ],
+      "requiresLocation": true,
+      "source": "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/FunctionalPOs.pdf",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122006": {
+      "localities": [
+        "Basai",
+        "Daulatabad",
+        "Gurgaon Village",
+        "Railway Road"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122007": {
+      "localities": [
+        "Industrial Estate Gurgaon"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122008": {
+      "localities": [
+        "DLF Phase II"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122009": {
+      "localities": [
+        "Galleria DLF Phase IV"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122010": {
+      "localities": [
+        "DLF Phase III"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122011": {
+      "localities": [
+        "Gurgaon Sector 56"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122012": {
+      "localities": [
+        "Vatika India Sector 82 S.O"
+      ],
+      "requiresLocation": true,
+      "source": "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/FunctionalPOs.pdf",
+      "preliminaryOnly": true,
+      "verified": true,
+      "verificationNote": "India Post search-index record; original PDF now returns 404. Municipality overlap requires exact location.",
+      "requiresLocationBeforeBrowsing": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122015": {
+      "localities": [
+        "Palam Road",
+        "Sarhaul"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122016": {
+      "localities": [
+        "Industrial Complex Dundahera",
+        "Dundahera"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122017": {
+      "localities": [
+        "Palam Vihar",
+        "Carterpuri"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122018": {
+      "localities": [
+        "South City II",
+        "D Block South City II"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122022": {
+      "localities": [],
+      "requiresLocation": true,
+      "source": "Additional postal directory reports; primary-source verification pending",
+      "preliminaryOnly": true,
+      "verified": false,
+      "enabled": false,
+      "coverageStatus": "verification-pending"
+    },
+    "122098": {
+      "localities": [
+        "CRPF Kadarpur"
+      ],
+      "requiresLocation": true,
+      "source": "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/FunctionalPOs.pdf",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities",
+      "requiresLocationBeforeBrowsing": true
+    },
+    "122101": {
+      "localities": [
+        "Badshahpur",
+        "Fazilpur",
+        "Kadipur",
+        "Kadarpur",
+        "Paltra",
+        "Teekli"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    },
+    "122102": {
+      "localities": [
+        "Bhondsi",
+        "Ghamroj",
+        "Maruti Kunj",
+        "Rithoj"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities",
+      "requiresLocationBeforeBrowsing": true
+    },
+    "122505": {
+      "localities": [
+        "Dhankot",
+        "Garhi Harsaru",
+        "Wazirpur"
+      ],
+      "requiresLocation": true,
+      "source": "https://gurugram.gov.in/std-pin-codes/",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "coverageStatus": "preliminary-city-localities"
+    }
+  },
+  "excludedDistrictExamples": [
+    "122051",
+    "122052",
+    "122103",
+    "122413",
+    "122414",
+    "122502",
+    "122503",
+    "122504",
+    "122506"
+  ],
+  "geocoding": {
+    "provider": "arcgis",
+    "endpoint": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates",
+    "keyEnvironmentVariable": "ARCGIS_GEOCODING_API_KEY",
+    "minimumScore": 95,
+    "allowedAddressTypes": [
+      "PointAddress",
+      "StreetAddress",
+      "Subaddress",
+      "POI"
+    ],
+    "addressMatchToleranceKm": 0.25
+  },
+  "deliveryOnlyMessage": "Balcony makeover services are currently limited soon we will reach you. You can still shop all our plants and decor products.",
+  "deliveryTerritory": {
+    "name": "Delhi NCR",
+    "source": "https://ncrpb.nic.in/ncrconstituent.html",
+    "verifiedAt": "2026-10-11",
+    "scope": "Whole NCT Delhi and the NCRPB-listed 24 districts. Exact address district and state must be returned by the geocoding provider; no PIN prefix approximation.",
+    "regions": {
+      "Delhi": [
+        "*"
+      ],
+      "Haryana": [
+        "Faridabad",
+        "Gurugram",
+        "Gurgaon",
+        "Nuh",
+        "Mewat",
+        "Rohtak",
+        "Sonepat",
+        "Sonipat",
+        "Rewari",
+        "Jhajjhar",
+        "Jhajjar",
+        "Panipat",
+        "Palwal",
+        "Bhiwani",
+        "Charkhi Dadri",
+        "Mahendragarh",
+        "Mahendragarh District",
+        "Jind",
+        "Karnal"
+      ],
+      "Uttar Pradesh": [
+        "Meerut",
+        "Ghaziabad",
+        "Gautam Budh Nagar",
+        "Gautam Buddh Nagar",
+        "Gautam Buddha Nagar",
+        "Bulandshahr",
+        "Baghpat",
+        "Hapur",
+        "Shamli",
+        "Muzaffarnagar"
+      ],
+      "Rajasthan": [
+        "Alwar",
+        "Bharatpur"
+      ]
+    }
+  }
+}

@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import {
+  countCompletedGenerationsForUser,
   deleteDesign,
   designPublicResult,
   getDesign,
 } from "@/lib/design-store";
+import {
+  MAX_GENERATIONS_PER_USER,
+  supabaseConfigured,
+  userFromRequest,
+} from "@/lib/supabase";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,15 +23,42 @@ function json(data: unknown, status = 200) {
 
 type Ctx = { params: { id: string } };
 
-export async function GET(_request: Request, { params }: Ctx) {
+export async function GET(request: Request, { params }: Ctx) {
   const row = await getDesign(params.id);
   if (!row) return json({ error: "Design not found." }, 404);
-  return json(designPublicResult(row));
+  if (supabaseConfigured() && row.ownerId) {
+    const user = await userFromRequest(request);
+    if (!user || user.id !== row.ownerId) {
+      return json({ error: "Design not found or access denied." }, 404);
+    }
+  }
+  const out = designPublicResult(row);
+  if (row.ownerId && supabaseConfigured()) {
+    const used = await countCompletedGenerationsForUser(row.ownerId);
+    out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
+  }
+  return json(out);
 }
 
-export async function DELETE(_request: Request, { params }: Ctx) {
+export async function DELETE(request: Request, { params }: Ctx) {
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin) {
+    return json({ error: "Invalid request origin." }, 403);
+  }
   const row = await getDesign(params.id);
   if (!row) return json({ error: "Design not found." }, 404);
+  if (supabaseConfigured() && row.ownerId) {
+    const user = await userFromRequest(request);
+    if (!user || user.id !== row.ownerId) {
+      return json({ error: "Design not found or access denied." }, 404);
+    }
+  }
+  if (row.status === "generating") {
+    return json(
+      { error: "Please wait for generation to finish before deleting." },
+      409
+    );
+  }
   await deleteDesign(params.id);
-  return json({ ok: true });
+  return json({ deleted: true });
 }

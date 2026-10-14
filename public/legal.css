@@ -1,0 +1,29 @@
+.legal-page{max-width:760px;margin:0 auto;padding:48px 6% 80px}
+.legal-page .eyebrow{display:block;margin-bottom:12px}
+.legal-page h1{font:clamp(34px,5vw,52px)/1.15 'Playfair Display',Georgia,serif;margin:0 0 18px;color:var(--ink,#304c35)}
+.legal-page .lede{font-size:16px;color:#5d6b58;margin:0 0 36px;max-width:38em}
+.legal-page h2{font:26px/1.25 'Playfair Display',Georgia,serif;margin:36px 0 12px;color:var(--ink,#304c35)}
+.legal-page h3{font-size:15px;margin:22px 0 8px}
+.legal-page p,.legal-page li{font-size:14px;line-height:1.7;color:#3d4d40}
+.legal-page ul,.legal-page ol{padding-left:1.2em;margin:0 0 16px}
+.legal-page li{margin:0 0 8px}
+.legal-page ol>li{padding-left:4px}
+.legal-page ol ul{margin-top:8px}
+.legal-page .updated{font-size:12px;color:#7a8574;margin-bottom:28px}
+.legal-nav{display:flex;flex-wrap:wrap;gap:14px 22px;margin:28px 0 0;padding-top:22px;border-top:1px solid #d8dcc7;font-size:13px}
+.legal-nav a{text-decoration:underline;text-underline-offset:3px}
+.site-footer-links{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;margin:14px 0 6px;font-size:12px}
+.site-footer-links a{text-decoration:underline;text-underline-offset:3px;color:#5d6b58}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:28px 0}
+.review-card{background:#eef1e4;border-radius:16px;padding:22px 20px;border:1px solid #d8dcc7}
+.review-card .stars{letter-spacing:2px;color:#b18314;font-size:13px;margin-bottom:10px}
+.review-card blockquote{margin:0 0 14px;font-size:14px;line-height:1.65;color:#304c35}
+.review-card cite{font-style:normal;font-size:12px;font-weight:600;color:#5d6b58}
+.review-card cite span{display:block;font-weight:400;margin-top:3px;color:#7a8574}
+.reviews-cta{margin-top:28px;padding:22px;border-radius:14px;background:#f3f0e2;border:1px solid #d8dcc7}
+.reviews-cta p{margin:0 0 14px}
+.home-reviews{padding:70px 6%;background:linear-gradient(180deg,#f7f4e8 0%,#fbf8e9 100%)}
+.home-reviews .section-head{max-width:1100px;margin:0 auto 28px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end}
+.home-reviews .reviews-grid{max-width:1100px;margin:0 auto}
+.home-reviews .more-link{font-size:13px;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:700px){.legal-page{padding-top:32px}.home-reviews .section-head{align-items:flex-start}}

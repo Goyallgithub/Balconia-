@@ -1,34 +1,34 @@
 # Balconia
 
-Frontend from the GPT export (static site in `public/`) plus a minimal Next.js API for AI balcony previews via Leonardo.AI (`nano-banana-2`).
+Client frontend from their latest export (`public/`) + **our** Next.js backend (Vercel-friendly).
+
+## Stack
+
+| Layer | Choice |
+| --- | --- |
+| Frontend | Static site in `public/` (copied from client export) |
+| App host | **Next.js 14** → deploy on **Vercel** |
+| Designs / AI images | Local/`data/designs` (ephemeral on Vercel unless you add Blob later) |
+| Image model | **OpenAI** (`OPENAI_API_KEY`) |
+| Orders / consultations | JSON files under `data/` for now (swap to Postgres/Blob when ready) |
+| Pincode / coverage | `/api/serviceability` using their coverage config |
+
+No Cloudflare Workers / D1 / R2 required to run or host.
 
 ## Local
 
 ```bash
 npm install
-cp .env.example .env.local
-# set LEONARDO_API_KEY in .env.local
+cp .env.example .env.local   # set OPENAI_API_KEY
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Static pages: `/`, `/catalogue.html`, `/cart.html`, `/checkout.html`.  
-API: `POST /api/designs`, `POST /api/designs/:id/generate`, image routes under `/api/designs/:id/image`.
-
 ## Vercel
 
 1. Import this GitHub repo (Next.js).
-2. Add secret **`LEONARDO_API_KEY`** (server-only).
+2. Set `OPENAI_API_KEY` (+ optional `ARCGIS_GEOCODING_API_KEY`).
 3. Deploy.
 
-Customer photos are stored under `data/designs/` locally (gitignored). On Vercel the filesystem is ephemeral — for production persistence later, attach Blob/S3 storage.
-
-## Leonardo
-
-- Model: `nano-banana-2`
-- Private 1024×1024 generation, `prompt_enhance: OFF`
-- Balcony photo = reference 1 (HIGH); up to 5 catalogue product photos as further references (MID)
-- Prices are calculated from catalogue `pricePaise` only — never by the image model
-
-Never put `LEONARDO_API_KEY` in browser code or `NEXT_PUBLIC_*` vars.
+Uploads on Vercel’s filesystem are ephemeral — for durable orders/photos later, add Blob/S3 + a database. See `CLIENT_BACKLOG.md`.

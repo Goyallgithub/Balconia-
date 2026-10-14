@@ -3,11 +3,19 @@ import sharp from "sharp";
 import products from "@/lib/shop-data.json";
 import { planBalcony } from "@/lib/design-plan.mjs";
 import {
+  assertUserCanGenerate,
+  countCompletedGenerationsForUser,
   countDesignsSince,
   designPublicResult,
   findByRequestId,
   saveDesign,
 } from "@/lib/design-store";
+import { generationAvailable } from "@/lib/image-provider";
+import {
+  MAX_GENERATIONS_PER_USER,
+  supabaseConfigured,
+  userFromRequest,
+} from "@/lib/supabase";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,9 +43,19 @@ function sniffMime(bytes: Uint8Array): string | null {
   return null;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const user = await userFromRequest(request);
+  let generationsRemaining: number | null = null;
+  if (user && supabaseConfigured()) {
+    const used = await countCompletedGenerationsForUser(user.id);
+    generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
+  }
   return json({
-    generationAvailable: Boolean(process.env.LEONARDO_API_KEY),
+    generationAvailable: generationAvailable(),
+    authRequired: supabaseConfigured(),
+    signedIn: Boolean(user),
+    generationsRemaining,
+    maxGenerations: MAX_GENERATIONS_PER_USER,
   });
 }
 
@@ -46,6 +64,18 @@ export async function POST(request: Request) {
     const origin = request.headers.get("origin");
     if (origin && origin !== new URL(request.url).origin) {
       return json({ error: "Invalid request origin." }, 403);
+    }
+
+    const user = await userFromRequest(request);
+    if (supabaseConfigured() && !user) {
+      return json(
+        {
+          error: "Please sign in to save your balcony photo and create a design.",
+          code: "auth_required",
+          signInUrl: "/#account",
+        },
+        401
+      );
     }
 
     const form = await request.formData();
@@ -65,11 +95,33 @@ export async function POST(request: Request) {
       return json({ error: "Invalid request reference." }, 400);
     }
 
-    const existing = await findByRequestId(requestId);
-    if (existing) return json(designPublicResult(existing), 200);
+    const existing = await findByRequestId(requestId, user?.id);
+    if (existing) {
+      const out = designPublicResult(existing);
+      if (user && supabaseConfigured()) {
+        const used = await countCompletedGenerationsForUser(user.id);
+        out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
+      }
+      return json(out, 200);
+    }
+
+    // Soft check: creating a design that will auto-generate needs remaining quota
+    if (user && generationAvailable()) {
+      try {
+        await assertUserCanGenerate(user.id);
+      } catch (e) {
+        return json(
+          {
+            error: e instanceof Error ? e.message : "Generation limit reached.",
+            code: "generation_limit",
+          },
+          429
+        );
+      }
+    }
 
     const dayAgo = new Date(Date.now() - 86400000).toISOString();
-    if ((await countDesignsSince(dayAgo)) >= 40) {
+    if ((await countDesignsSince(dayAgo)) >= 80) {
       return json(
         {
           error:
@@ -99,7 +151,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Compress / normalize large uploads server-side
     const compressed = await sharp(raw)
       .rotate()
       .resize({ width: 1536, height: 1536, fit: "inside", withoutEnlargement: true })
@@ -111,13 +162,19 @@ export async function POST(request: Request) {
 
     const record = await saveDesign({
       requestId,
-      answers: plan.answers as Record<string, unknown>,
+      answers: plan.answers as unknown as Record<string, unknown>,
       plan,
       photo: compressed,
       mime: "image/webp",
+      ownerId: user?.id || null,
     });
 
-    return json(designPublicResult(record), 201);
+    const out = designPublicResult(record);
+    if (user && supabaseConfigured()) {
+      const used = await countCompletedGenerationsForUser(user.id);
+      out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
+    }
+    return json(out, 201);
   } catch (e) {
     const message = e instanceof Error ? e.message : "";
     const client = /Please|Invalid|check your/i.test(message);
