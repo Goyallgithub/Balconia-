@@ -38,7 +38,7 @@ function orderHtml(input: OrderEmailInput) {
     <ul>${lines}</ul>
     <p>${input.customer.address || ""}${input.customer.city ? ", " + input.customer.city : ""} ${input.customer.pin || ""}</p>
     <p>Phone: ${input.customer.phone}</p>
-    <p>We’ll confirm next steps by call or WhatsApp. — Team Balconia · orders@balconia.in</p>
+    <p>We’ll confirm next steps by call or WhatsApp. — Team Balconia · care@balconia.in</p>
   </div>`;
 }
 
@@ -51,6 +51,31 @@ function parseOpsList(raw: string): string[] {
         .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
     ),
   ];
+}
+
+/**
+ * Sandbox sender onboarding@resend.dev only delivers to the Resend account email.
+ * Map each ops Gmail to its own API key.
+ */
+function resendKeyForRecipient(email: string): string | null {
+  const primary = process.env.RESEND_API_KEY?.trim() || "";
+  const key2 = process.env.RESEND_API_KEY_2?.trim() || "";
+  const inbox1 = (
+    process.env.RESEND_INBOX || "goyallbhavy@gmail.com"
+  )
+    .trim()
+    .toLowerCase();
+  const inbox2 = (
+    process.env.RESEND_INBOX_2 || "architagarwal460450@gmail.com"
+  )
+    .trim()
+    .toLowerCase();
+
+  if (email === inbox1 && primary) return primary;
+  if (email === inbox2 && key2) return key2;
+  if (email === inbox2 && primary && !key2) return primary;
+  if (email === inbox1) return primary || null;
+  return null;
 }
 
 async function sendOne(
@@ -81,22 +106,20 @@ async function sendOne(
   return { ok: true };
 }
 
-/**
- * Sends ops alert to ORDER_EMAIL_OPS (default orders@balconia.in).
- * Requires RESEND_API_KEY and a verified domain sender in ORDER_EMAIL_FROM.
- */
 export async function sendOrderEmails(input: OrderEmailInput): Promise<{
   sent: boolean;
   reason?: string;
 }> {
-  const key = process.env.RESEND_API_KEY?.trim() || "";
   const from =
-    process.env.ORDER_EMAIL_FROM || "Balconia <orders@balconia.in>";
+    process.env.ORDER_EMAIL_FROM || "Balconia <onboarding@resend.dev>";
   const opsList = parseOpsList(
-    process.env.ORDER_EMAIL_OPS || "orders@balconia.in"
+    process.env.ORDER_EMAIL_OPS ||
+      "goyallbhavy@gmail.com,architagarwal460450@gmail.com"
   );
   if (!opsList.length) return { sent: false, reason: "ORDER_EMAIL_OPS empty" };
-  if (!key) return { sent: false, reason: "RESEND_API_KEY not set" };
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    return { sent: false, reason: "RESEND_API_KEY not set" };
+  }
 
   const subject = `Balconia order ${input.orderId}`;
   const html = orderHtml(input);
@@ -105,14 +128,14 @@ export async function sendOrderEmails(input: OrderEmailInput): Promise<{
   let anyOk = false;
   const failures: string[] = [];
   for (const ops of opsList) {
+    const key = resendKeyForRecipient(ops);
+    if (!key) {
+      failures.push(`${ops}:no Resend key mapped for this inbox`);
+      continue;
+    }
     const result = await sendOne(key, from, [ops], opsSubject, html);
     if (result.ok) anyOk = true;
     else failures.push(`${ops}:${result.reason}`);
-  }
-
-  const toCustomer = input.customer.email?.trim().toLowerCase();
-  if (toCustomer && !opsList.includes(toCustomer)) {
-    await sendOne(key, from, [toCustomer], subject, html);
   }
 
   if (!anyOk)
