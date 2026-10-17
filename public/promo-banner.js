@@ -1,14 +1,14 @@
 (()=>{
-  const KEY='balconia-promo-flash-dismissed';
+  const KEY='balconia-diwali-flash-dismissed';
   try{if(sessionStorage.getItem(KEY)==='1')return;}catch{}
   const bar=document.createElement('div');
-  bar.className='promo-flash';
+  bar.className='promo-flash diwali-flash';
   bar.setAttribute('role','region');
-  bar.setAttribute('aria-label','Shipping offer');
+  bar.setAttribute('aria-label','Diwali offer');
   bar.innerHTML=`<div class="promo-flash-inner">
-      <span>Use code <span class="promo-code">BALCONIA</span></span>
-      <span>Free shipping on DIY orders ₹5,000+ · Free shipping &amp; installation on makeovers ₹15,000+</span>
-      <a href="catalogue.html">Shop now ↗</a>
+      <span class="diwali-flash-mark" aria-hidden="true">✦</span>
+      <span>Use code <span class="promo-code">BALCONIA</span> this Diwali — free shipping on orders ₹500+ · free installation on orders ₹1,000+</span>
+      <a href="diwali.html">Shop festive combos ↗</a>
     </div>
     <button type="button" class="promo-flash-close" aria-label="Dismiss offer">×</button>`;
   document.documentElement.classList.add('promo-flash-on');

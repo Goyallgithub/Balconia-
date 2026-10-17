@@ -1,4 +1,21 @@
 .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+header .cart-link{
+  border:0;
+  padding:10px 14px;
+  border-radius:999px;
+  background:#304c35;
+  color:#f9f0de;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  font-weight:600;
+  font-size:13px;
+  line-height:1;
+}
+header .cart-link-inner{display:inline-flex;align-items:center;gap:7px}
+header .cart-icon{width:18px;height:18px;flex-shrink:0}
+header .cart-count{min-width:1.1em;text-align:center;font-variant-numeric:tabular-nums}
+header .cart-link:hover{filter:brightness(1.06)}
 .account-chip{display:inline-flex;align-items:center}
 .account-link{
   background:#fffdf4;

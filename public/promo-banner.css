@@ -1,30 +1,51 @@
 .promo-flash{
   position:sticky;top:0;z-index:70;
-  background:linear-gradient(90deg,#304c35 0%,#3f5f45 45%,#b18314 100%);
-  color:#fffdf4;
+  background:linear-gradient(90deg,#f7f1e4 0%,#f3e8d2 40%,#efe0c4 100%);
+  color:#3a4f3c;
   font-family:'DM Sans',sans-serif;
   font-size:13px;
-  line-height:1.35;
+  line-height:1.4;
   text-align:center;
-  padding:10px 44px 10px 16px;
-  box-shadow:0 2px 12px rgba(48,76,53,.18);
+  padding:11px 44px 11px 16px;
+  border-bottom:1px solid rgba(176,145,74,.28);
+  box-shadow:0 1px 0 rgba(255,255,255,.65) inset;
 }
-.promo-flash a{color:#fffdf4;font-weight:700;text-decoration:underline;text-underline-offset:3px}
-.promo-flash strong{font-weight:800;letter-spacing:.04em}
-.promo-flash-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;align-items:center}
+.promo-flash.diwali-flash{
+  background:
+    linear-gradient(120deg,rgba(255,252,244,.92),rgba(247,236,214,.95)),
+    linear-gradient(90deg,#efe6d3,#f6e7c8 50%,#efe0c0);
+}
+.promo-flash a{
+  color:#6b5218;
+  font-weight:700;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.promo-flash strong{font-weight:700;letter-spacing:.02em;color:#2f4634}
+.promo-flash-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:6px 14px;
+  justify-content:center;align-items:center;
+}
+.diwali-flash-mark{
+  color:#b08f3a;
+  font-size:14px;
+  line-height:1;
+}
 .promo-flash .promo-code{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,253,244,.16);
-  border:1px solid rgba(255,253,244,.35);
+  display:inline-flex;align-items:center;
+  background:rgba(176,143,58,.14);
+  border:1px solid rgba(176,143,58,.35);
   border-radius:999px;
-  padding:4px 12px;
+  padding:3px 10px;
   font-weight:800;
   letter-spacing:.08em;
+  color:#6b5218;
 }
 .promo-flash-close{
   position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  border:0;background:transparent;color:#fffdf4;font-size:20px;line-height:1;
-  cursor:pointer;padding:4px 8px;opacity:.85;
+  border:0;background:transparent;color:#6d7a68;font-size:20px;line-height:1;
+  cursor:pointer;padding:4px 8px;opacity:.8;
 }
 .promo-flash-close:hover{opacity:1}
 html.promo-flash-on{scroll-padding-top:130px}

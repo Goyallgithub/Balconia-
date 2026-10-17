@@ -22,6 +22,7 @@ body[data-page] .intro p{color:#d5dfcd}body[data-page] .intro .eyebrow{color:var
 body[data-page] .search-row input,body[data-page] select{background:#faf4e6}
 body[data-page] .photo-button{background:#e5e9dc}
 body[data-page] .cart-link{background:var(--balconia-forest);color:#f9f0de}
+body[data-page] .cart-link:hover{filter:brightness(1.06)}
 body.balconia-home footer,body[data-page] footer{background:var(--balconia-forest);color:#f9f0de;border-color:#51654c}
 footer .footer-connect{color:#f9f0de;border-color:#53664f}footer .footer-connect a:hover{color:#e8cc8c}footer .footer-follow-label{color:#e1c486}
 footer .logo{display:inline-flex;background:var(--balconia-paper);padding:8px 12px;border-radius:14px}

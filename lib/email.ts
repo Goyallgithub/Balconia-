@@ -28,14 +28,14 @@ function orderHtml(input: OrderEmailInput) {
         `<li>${i.quantity} × ${i.name} — ${money(i.unitPricePaise * i.quantity)}</li>`
     )
     .join("");
-  const promoNote =
-    (input.customer as { promo?: { note?: string | null } })?.promo?.note ||
+  const feesNote =
+    (input.customer as { fees?: { note?: string | null } })?.fees?.note ||
     "";
   return `<div style="font-family:Georgia,serif;color:#304c35">
     <h1>Balconia order ${input.orderId}</h1>
     <p>Hi ${input.customer.name},</p>
     <p>We received your <strong>${input.fulfilmentType === "balconia" ? "makeover" : "DIY"}</strong> request.</p>
-    <p><strong>Total products:</strong> ${money(input.subtotalPaise)}${promoNote ? ` · ${promoNote}` : " (delivery/installation quoted separately if needed)"}</p>
+    <p><strong>Total products:</strong> ${money(input.subtotalPaise)}${feesNote ? ` · ${feesNote}` : ""}</p>
     <ul>${lines}</ul>
     <p>${input.customer.address || ""}${input.customer.city ? ", " + input.customer.city : ""} ${input.customer.pin || ""}</p>
     <p>Phone: ${input.customer.phone}</p>

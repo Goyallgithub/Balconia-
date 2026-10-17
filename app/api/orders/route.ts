@@ -125,31 +125,55 @@ export async function POST(request: Request) {
     );
     order.customer = { ...order.customer, coverage };
 
-    const couponRaw = String(body?.couponCode || "")
-      .trim()
-      .toUpperCase();
-    const couponOk = couponRaw === "BALCONIA";
-    const diyFreeShip = 500_000; // ₹5,000
-    const makeoverFreeShip = 1_500_000; // ₹15,000
-    const threshold =
-      fulfilmentType === "balconia" ? makeoverFreeShip : diyFreeShip;
-    const shippingFree = couponOk && order.subtotalPaise >= threshold;
-    const installationFree =
-      fulfilmentType === "balconia" && shippingFree;
-    const promo = {
+    const FREE_SHIP_PAISE = 50_000; // ₹500
+    const SHIP_FEE_PAISE = 15_000; // ₹150
+    const FREE_INSTALL_PAISE = 100_000; // ₹1,000
+    const INSTALL_FEE_PAISE = 50_000; // ₹500
+    const couponOk =
+      String(body?.couponCode || "")
+        .trim()
+        .toUpperCase() === "BALCONIA";
+    const installNeeded =
+      fulfilmentType === "balconia" ||
+      (order.items as Array<{ id: string }>).some((line) =>
+        itemNeedsInstallation(products.find((p: { id: string }) => p.id === line.id))
+      );
+    // Diwali code BALCONIA unlocks free shipping at ₹500+ / free installation at ₹1,000+
+    const shippingPaise =
+      couponOk && order.subtotalPaise >= FREE_SHIP_PAISE ? 0 : SHIP_FEE_PAISE;
+    const shippingFree = shippingPaise === 0;
+    const installationPaise = installNeeded
+      ? couponOk && order.subtotalPaise >= FREE_INSTALL_PAISE
+        ? 0
+        : INSTALL_FEE_PAISE
+      : 0;
+    const installationFree = installNeeded && installationPaise === 0;
+    const fees = {
       couponCode: couponOk ? "BALCONIA" : null,
+      shippingPaise,
+      installationPaise,
       shippingFree,
       installationFree,
-      thresholdPaise: threshold,
-      note: shippingFree
-        ? fulfilmentType === "balconia"
-          ? "BALCONIA · free shipping & installation (makeover ₹15,000+)"
-          : "BALCONIA · free shipping (DIY ₹5,000+)"
-        : couponOk
-          ? "BALCONIA applied · threshold not met"
-          : null,
+      installNeeded,
+      note: couponOk
+        ? [
+            shippingFree
+              ? "BALCONIA · free shipping."
+              : "BALCONIA applied · shipping ₹150 until ₹500.",
+            installNeeded
+              ? installationFree
+                ? "Free installation."
+                : "Installation ₹500 until ₹1,000."
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" ")
+        : [
+            "Apply Diwali code BALCONIA for free shipping on orders ₹500+ and free installation on orders ₹1,000+.",
+            `Shipping ₹150${installNeeded ? " · Installation ₹500" : ""}.`,
+          ].join(" "),
     };
-    order.customer = { ...order.customer, promo };
+    order.customer = { ...order.customer, fees };
 
     const id =
       "BAL-" +
@@ -172,9 +196,13 @@ export async function POST(request: Request) {
       subtotalPaise: order.subtotalPaise,
       designId: body.designId || null,
       fulfilmentType,
-      shippingStatus: shippingFree ? "free_with_coupon" : "to_be_confirmed",
+      shippingStatus: shippingFree
+        ? "free"
+        : shippingPaise > 0
+          ? "flat_fee"
+          : "to_be_confirmed",
       ownerId: user?.id || null,
-      promo,
+      fees,
     };
 
     if (supabaseConfigured()) {
@@ -229,7 +257,7 @@ export async function POST(request: Request) {
         status,
         fulfilmentType,
         emailSent: mail.sent,
-        promo,
+        fees,
       },
       201
     );
