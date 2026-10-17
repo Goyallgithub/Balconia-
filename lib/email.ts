@@ -65,8 +65,9 @@ function resendKeyForRecipient(email: string): string | null {
   )
     .trim()
     .toLowerCase();
+  // Archit Resend account is registered as orders@balconia.in (sandbox only).
   const inbox2 = (
-    process.env.RESEND_INBOX_2 || "architagarwal460450@gmail.com"
+    process.env.RESEND_INBOX_2 || "orders@balconia.in"
   )
     .trim()
     .toLowerCase();
@@ -114,7 +115,7 @@ export async function sendOrderEmails(input: OrderEmailInput): Promise<{
     process.env.ORDER_EMAIL_FROM || "Balconia <onboarding@resend.dev>";
   const opsList = parseOpsList(
     process.env.ORDER_EMAIL_OPS ||
-      "goyallbhavy@gmail.com,architagarwal460450@gmail.com"
+      "goyallbhavy@gmail.com,orders@balconia.in"
   );
   if (!opsList.length) return { sent: false, reason: "ORDER_EMAIL_OPS empty" };
   if (!process.env.RESEND_API_KEY?.trim()) {
