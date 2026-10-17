@@ -19,7 +19,7 @@
     window.BALCONIA_SUPABASE_ANON_KEY='';
   }
   const s=document.createElement('script');
-  s.src='auth.js?v=header-2';
+  s.src='auth.js?v=signup-no-email-1';
   s.onload=()=>{if(pendingOpen&&window.BalconiaAuth?.open)window.BalconiaAuth.open();};
   document.body.appendChild(s);
 })();
