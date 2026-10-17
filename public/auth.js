@@ -111,10 +111,13 @@ function ensureUi(){
     submit().disabled=true;
     try{
       if(mode==='signup'){
-        const data=await api('/signup',{method:'POST',body:JSON.stringify({email,password})});
+        // Soft-launch: create via our API (no Supabase confirmation email / rate limit).
+        const r=await fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+        const data=await r.json().catch(()=>({}));
+        if(!r.ok)throw new Error(data.error||data.message||'Could not create account');
         if(data.access_token)save({...data,user:data.user||{email}});
         else {
-          err().textContent='Check your email to confirm, then sign in.';
+          err().textContent=data.error||'Account created — please sign in.';
           mode='signin';
           title().textContent='Sign in to Balconia';
           submit().textContent='Sign in ↗';
