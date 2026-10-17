@@ -1,14 +1,21 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { dataRoot, ensureDataDir, isServerlessRuntime } from "@/lib/runtime-paths";
+import { supabaseConfigured } from "@/lib/supabase";
 
 const API = "https://api.openai.com/v1/images/edits";
-const USAGE_FILE = () =>
-  path.join(
-    process.env.DESIGN_DATA_DIR || path.join(process.cwd(), "data", "designs"),
-    "_openai_usage.json"
-  );
+
+const USAGE_FILE = () => path.join(dataRoot("designs"), "_openai_usage.json");
 
 type UsageState = { count: number; updatedAt: string };
+
+/** Local demo only — production uses per-user caps in Supabase. */
+function localOpenAiBudgetEnabled(): boolean {
+  if (isServerlessRuntime()) return false;
+  if (supabaseConfigured()) return false;
+  const max = Number(process.env.OPENAI_IMAGE_MAX_GENERATIONS || "2");
+  return Number.isFinite(max) && max > 0;
+}
 
 async function readUsage(): Promise<UsageState> {
   try {
@@ -19,16 +26,16 @@ async function readUsage(): Promise<UsageState> {
 }
 
 async function bumpUsage(): Promise<void> {
+  if (!localOpenAiBudgetEnabled()) return;
   const prev = await readUsage();
   const next = { count: prev.count + 1, updatedAt: new Date().toISOString() };
-  await fs.mkdir(path.dirname(USAGE_FILE()), { recursive: true });
+  await ensureDataDir("designs");
   await fs.writeFile(USAGE_FILE(), JSON.stringify(next, null, 2));
 }
 
 export async function assertOpenAiBudget(): Promise<void> {
+  if (!localOpenAiBudgetEnabled()) return;
   const max = Number(process.env.OPENAI_IMAGE_MAX_GENERATIONS || "2");
-  // <= 0 means unlimited (local testing only)
-  if (!Number.isFinite(max) || max <= 0) return;
   const { count } = await readUsage();
   if (count >= max) {
     throw new Error(

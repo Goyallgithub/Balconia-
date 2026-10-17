@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import { generationAvailable } from "@/lib/image-provider";
+import { dataRoot, ensureDataDir } from "@/lib/runtime-paths";
 import {
   MAX_GENERATIONS_PER_USER,
   supabaseAdmin,
@@ -23,13 +24,10 @@ export type DesignRecord = {
   ownerId?: string | null;
 };
 
-const root = () =>
-  path.join(
-    process.env.DESIGN_DATA_DIR || path.join(process.cwd(), "data", "designs")
-  );
+const root = () => dataRoot("designs");
 
 async function ensureRoot() {
-  await fs.mkdir(root(), { recursive: true });
+  await ensureDataDir("designs");
 }
 
 function designDir(id: string) {
@@ -319,7 +317,12 @@ export async function writeDesignRender(
     if (error) throw new Error(error.message);
     return key;
   }
-  const outputPath = path.join(path.dirname(row.originalPath), "render.webp");
+  await ensureRoot();
+  const dir = row.originalPath.startsWith("/")
+    ? path.dirname(row.originalPath)
+    : designDir(row.id);
+  await fs.mkdir(dir, { recursive: true });
+  const outputPath = path.join(dir, "render.webp");
   await fs.writeFile(outputPath, bytes);
   return outputPath;
 }
