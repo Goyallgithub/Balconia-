@@ -29,8 +29,7 @@ function orderHtml(input: OrderEmailInput) {
     )
     .join("");
   const feesNote =
-    (input.customer as { fees?: { note?: string | null } })?.fees?.note ||
-    "";
+    (input.customer as { fees?: { note?: string | null } })?.fees?.note || "";
   return `<div style="font-family:Georgia,serif;color:#304c35">
     <h1>Balconia order ${input.orderId}</h1>
     <p>Hi ${input.customer.name},</p>
@@ -39,7 +38,7 @@ function orderHtml(input: OrderEmailInput) {
     <ul>${lines}</ul>
     <p>${input.customer.address || ""}${input.customer.city ? ", " + input.customer.city : ""} ${input.customer.pin || ""}</p>
     <p>Phone: ${input.customer.phone}</p>
-    <p>We’ll confirm next steps by call or WhatsApp. — Team Balconia · care@balconia.in</p>
+    <p>We’ll confirm next steps by call or WhatsApp. — Team Balconia · orders@balconia.in</p>
   </div>`;
 }
 
@@ -52,27 +51,6 @@ function parseOpsList(raw: string): string[] {
         .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
     ),
   ];
-}
-
-/**
- * Without a verified domain, Resend only delivers to the email that owns each API key.
- * Map: primary key → RESEND_INBOX (default goyallbhavy@gmail.com)
- *      RESEND_API_KEY_2 → RESEND_INBOX_2 (default cachetanruwatia01@gmail.com)
- */
-function resendKeyForRecipient(email: string): string | null {
-  const primary = process.env.RESEND_API_KEY?.trim() || "";
-  const key2 = process.env.RESEND_API_KEY_2?.trim() || "";
-  const inbox1 = (
-    process.env.RESEND_INBOX || "goyallbhavy@gmail.com"
-  ).trim().toLowerCase();
-  const inbox2 = (
-    process.env.RESEND_INBOX_2 || "cachetanruwatia01@gmail.com"
-  ).trim().toLowerCase();
-
-  if (email === inbox2 && key2) return key2;
-  if (email === inbox1 && primary) return primary;
-  if (email === inbox2 && !key2) return null; // need friend's key
-  return primary || null;
 }
 
 async function sendOne(
@@ -104,22 +82,21 @@ async function sendOne(
 }
 
 /**
- * Ops alerts to ORDER_EMAIL_OPS. Without a domain, each recipient needs a Resend
- * API key from an account registered to THAT gmail (see RESEND_API_KEY_2).
+ * Sends ops alert to ORDER_EMAIL_OPS (default orders@balconia.in).
+ * Requires RESEND_API_KEY and a verified domain sender in ORDER_EMAIL_FROM.
  */
 export async function sendOrderEmails(input: OrderEmailInput): Promise<{
   sent: boolean;
   reason?: string;
 }> {
+  const key = process.env.RESEND_API_KEY?.trim() || "";
   const from =
-    process.env.ORDER_EMAIL_FROM || "Balconia <onboarding@resend.dev>";
+    process.env.ORDER_EMAIL_FROM || "Balconia <orders@balconia.in>";
   const opsList = parseOpsList(
-    process.env.ORDER_EMAIL_OPS || "goyallbhavy@gmail.com"
+    process.env.ORDER_EMAIL_OPS || "orders@balconia.in"
   );
   if (!opsList.length) return { sent: false, reason: "ORDER_EMAIL_OPS empty" };
-  if (!process.env.RESEND_API_KEY?.trim()) {
-    return { sent: false, reason: "RESEND_API_KEY not set" };
-  }
+  if (!key) return { sent: false, reason: "RESEND_API_KEY not set" };
 
   const subject = `Balconia order ${input.orderId}`;
   const html = orderHtml(input);
@@ -128,17 +105,6 @@ export async function sendOrderEmails(input: OrderEmailInput): Promise<{
   let anyOk = false;
   const failures: string[] = [];
   for (const ops of opsList) {
-    const key = resendKeyForRecipient(ops);
-    if (!key) {
-      failures.push(
-        `${ops}:no Resend key for this inbox (add RESEND_API_KEY_2 from an account signed up with this Gmail)`
-      );
-      console.error(
-        "Order email skipped — need RESEND_API_KEY_2 from a Resend account for",
-        ops
-      );
-      continue;
-    }
     const result = await sendOne(key, from, [ops], opsSubject, html);
     if (result.ok) anyOk = true;
     else failures.push(`${ops}:${result.reason}`);
@@ -146,11 +112,11 @@ export async function sendOrderEmails(input: OrderEmailInput): Promise<{
 
   const toCustomer = input.customer.email?.trim().toLowerCase();
   if (toCustomer && !opsList.includes(toCustomer)) {
-    const key = resendKeyForRecipient(toCustomer);
-    if (key) await sendOne(key, from, [toCustomer], subject, html);
+    await sendOne(key, from, [toCustomer], subject, html);
   }
 
-  if (!anyOk) return { sent: false, reason: failures.join("; ") || "ops failed" };
+  if (!anyOk)
+    return { sent: false, reason: failures.join("; ") || "ops failed" };
   return {
     sent: true,
     reason: failures.length ? failures.join("; ") : undefined,
