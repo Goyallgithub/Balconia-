@@ -197,14 +197,30 @@ function summary(button=''){
 function cartPage(){
   if(!lines().length){$('#cart-content').innerHTML='<div class="empty"><h2>Your bag is waiting for a little magic.</h2><a class="btn" href="catalogue.html">Explore the shop</a></div>';return;}
   const fees=orderFees();
-  $('#cart-content').innerHTML=`<div class="checkout-grid"><section>
-    <div class="cart-offer-banner ${couponActive()&&fees.shipFree&&(!fees.showInstall||fees.installFree)?'is-unlocked':''}">
-      <strong>${couponActive()?'Diwali offer':'Use code BALCONIA'}</strong>
-      <p>${esc(fees.note)}</p>
+  const totalCount=lines().reduce((s,x)=>s+x.quantity,0);
+  $('#cart-content').innerHTML=`
+    <div class="cart-top-bar">
+      <div>
+        <span>Bag Summary</span>
+        <strong>${totalCount} ${totalCount===1?'item':'items'} · ${money(fees.grandTotalPaise)}</strong>
+      </div>
+      <a class="btn" href="checkout.html">Proceed to Checkout ↗</a>
     </div>
-    ${lines().map(x=>`<article class="cart-item">${image(x.p)}<div><h3>${esc(x.p.name)}</h3><p class="note">${plantNote(x.p)}</p><div class="quantity"><button data-qty="${esc(x.id)}" data-delta="-1" aria-label="Reduce quantity">−</button><span>${x.quantity}</span><button data-qty="${esc(x.id)}" data-delta="1" aria-label="Increase quantity">+</button></div> <button class="remove" data-remove="${esc(x.id)}">Remove</button></div><strong>${money(x.p.pricePaise*x.quantity)}</strong></article>`).join('')}
-    <p><a href="catalogue.html">← Continue exploring</a></p>
-  </section>${summary('<a class="btn" href="checkout.html">Checkout · Cash on Delivery</a>')}</div>`;
+    <div class="checkout-grid"><section>
+      <div class="cart-offer-banner ${couponActive()&&fees.shipFree&&(!fees.showInstall||fees.installFree)?'is-unlocked':''}">
+        <strong>${couponActive()?'Diwali offer':'Use code BALCONIA'}</strong>
+        <p>${esc(fees.note)}</p>
+      </div>
+      ${lines().map(x=>`<article class="cart-item">${image(x.p)}<div><h3>${esc(x.p.name)}</h3><p class="note">${plantNote(x.p)}</p><div class="quantity"><button data-qty="${esc(x.id)}" data-delta="-1" aria-label="Reduce quantity">−</button><span>${x.quantity}</span><button data-qty="${esc(x.id)}" data-delta="1" aria-label="Increase quantity">+</button></div> <button class="remove" data-remove="${esc(x.id)}">Remove</button></div><strong>${money(x.p.pricePaise*x.quantity)}</strong></article>`).join('')}
+      <p><a href="catalogue.html">← Continue exploring</a></p>
+    </section>${summary('<a class="btn" href="checkout.html">Checkout · Cash on Delivery</a>')}</div>
+    <div class="cart-sticky-bar">
+      <div class="cart-sticky-info">
+        <span class="cart-sticky-label">Total (${totalCount} ${totalCount===1?'item':'items'})</span>
+        <strong class="cart-sticky-total">${money(fees.grandTotalPaise)}</strong>
+      </div>
+      <a class="btn cart-sticky-btn" href="checkout.html">Checkout · COD ↗</a>
+    </div>`;
   bindCoupon(cartPage);
   $('#cart-content').onclick=e=>{
     if(e.target.closest('#apply-coupon')||e.target.closest('#coupon-code'))return;
@@ -374,6 +390,10 @@ function checkout(){
             const token=await window.BalconiaAuth?.getAccessToken?.().catch(()=>'');
             const tokenParam=token?`&token=${encodeURIComponent(token)}`:'';
             window.open(`/api/orders/${encodeURIComponent(data.id)}/receipt?download=1${tokenParam}`,'_blank');
+          }catch(err){
+            btn.disabled=false;
+            btn.textContent='Download PDF Receipt';
+            toast(err.message||'Receipt download unavailable right now.');
           }
         };
       }catch(error){

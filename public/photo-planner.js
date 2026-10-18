@@ -326,14 +326,42 @@ function render(opts={}){
     </div>
     <p class="footnote">AI places suggested catalogue products into your photographed space. It cannot verify dimensions — measure before ordering.</p>
     <div class="estimate-box"><span>Estimated product cost</span><strong id="estimate-total">${money(p.subtotalPaise)}</strong><p>Sum of catalogue selling prices × quantities below. Delivery and installation are separate.</p></div>
-    <div class="fulfilment-options"><button type="button" class="button" id="choose-diy">DIY · choose my products ↓</button><button type="button" class="button" id="choose-service">Makeover with Balconia ↗</button></div>
+
+    <div class="makeover-next-steps" id="makeover-next-steps">
+      <div class="next-step-card card-makeover">
+        <span class="step-tag recommended">RECOMMENDED · ALL INCLUSIVE</span>
+        <h4>Option B: Balconia Makeover</h4>
+        <span class="step-sub">Products + Professional Installation</span>
+        <p>Full-service makeover: we deliver all pieces, unbox, style and professionally install your balcony nook.</p>
+        <button type="button" class="button button-makeover" id="choose-service">Order Makeover (Installation) ↗</button>
+      </div>
+
+      <div class="next-step-card card-diy">
+        <span class="step-tag">DELIVERY ONLY</span>
+        <h4>Option A: DIY Products</h4>
+        <span class="step-sub">Delivery across Delhi NCR</span>
+        <p>Order these catalogue pieces delivered safely to your doorstep across Delhi NCR with DIY setup instructions.</p>
+        <div class="step-actions">
+          <button type="button" class="button button-diy-direct" id="order-diy-direct">Proceed to Checkout (DIY) ↗</button>
+          <button type="button" class="button button-outline" id="choose-diy">Review &amp; Edit Items (${p.items.length}) ↓</button>
+        </div>
+      </div>
+    </div>
+
     <p class="footnote">DIY products: delivery within Delhi NCR. Balconia installation: coverage confirmed from Delivery details at checkout.</p>
     <section id="diy-products"><h3>Products in this makeover</h3>
       <p class="footnote">These catalogue items shaped your AI image. Change quantities to update the estimate.</p>
+      <div class="diy-products-top-action">
+        <span>Selected total: <strong id="selected-total-top">${money(p.subtotalPaise)}</strong></span>
+        <button type="button" class="button small" id="order-diy-top">Proceed to Checkout · COD ↗</button>
+      </div>
       <div class="design-products">${p.items.map(x=>`<article class="design-product"><img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy"><div><a href="catalogue.html#${esc(x.id)}">${esc(x.name)} ↗</a><small>${x.plantOnly?'Plant with nursery pot/bag; decorative planter extra':esc(x.size||'Confirm finish and dimensions before dispatch')}</small><strong>${money(x.unitPricePaise)} each</strong><label>Quantity <input type="number" min="0" max="20" step="1" value="${x.quantity}" data-plan-id="${esc(x.id)}" aria-label="Quantity for ${esc(x.name)}"></label></div></article>`).join('')}</div>
       <p class="selection-total">Selected product subtotal: <strong id="selected-total">${money(p.subtotalPaise)}</strong></p>
-      <button type="button" class="button" id="order-diy">Add selected products to bag ↗</button>
-      <p class="footnote">Your existing bag will be replaced with this design’s selected products.</p>
+      <div class="diy-checkout-actions">
+        <button type="button" class="button" id="order-diy">Proceed to Checkout · Cash on Delivery ↗</button>
+        <button type="button" class="button secondary" id="order-diy-bag">View items in Bag ↗</button>
+      </div>
+      <p class="footnote">Your bag will be updated with this design’s selected products. Cash on Delivery is available across Delhi NCR.</p>
     </section>
     <ul class="fit-notes">${p.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>
     <div id="design-error" role="alert"></div>
@@ -341,17 +369,20 @@ function render(opts={}){
 
   result.querySelectorAll('[data-plan-id]').forEach(x=>x.oninput=updateTotal);
   $('#choose-diy').onclick=()=>$('#diy-products').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  $('#order-diy-direct').onclick=()=>toCheckout('diy');
+  $('#order-diy-top').onclick=()=>toCheckout('diy');
   $('#order-diy').onclick=()=>toCheckout('diy');
+  $('#order-diy-bag').onclick=()=>toCheckout('diy','cart.html');
   $('#choose-service').onclick=()=>toCheckout('balconia');
   if($('#retry-render'))$('#retry-render').onclick=()=>retryGenerate();
   $('#delete-design').onclick=async()=>{try{await api('/api/designs/'+current.id,{method:'DELETE'});sessionStorage.removeItem('balconia-last-design');current=null;result.hidden=true;$('#balcony-photo').value='';$('#upload-preview').hidden=true;error('Your saved design and photos have been deleted.');}catch(e){$('#design-error').textContent=e.message;}};
-  result.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
+  setTimeout(()=>{const hero=result.querySelector('.makeover-hero')||result;hero.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});},80);
 }
 
 function selection(){return [...document.querySelectorAll('[data-plan-id]')].map(x=>({id:x.dataset.planId,quantity:Number(x.value)})).filter(x=>x.quantity>0);}
 function validSelection(){const all=[...document.querySelectorAll('[data-plan-id]')];if(all.some(x=>!Number.isInteger(Number(x.value))||Number(x.value)<0||Number(x.value)>20))throw Error('Use whole quantities from 0 to 20.');const list=selection();if(!list.length)throw Error('Select at least one product.');return list;}
-function updateTotal(){const list=selection();const total=list.some(x=>!Number.isInteger(x.quantity)||x.quantity>20)?'Check quantities':money(list.reduce((s,x)=>s+current.plan.items.find(p=>p.id===x.id).unitPricePaise*x.quantity,0));$('#selected-total').textContent=total;const est=$('#estimate-total');if(est&&total!=='Check quantities')est.textContent=total;}
-async function toCheckout(type){try{if(type==='balconia')await window.BalconiaCoverage.requireMakeover();const list=validSelection();localStorage.setItem('balconia-bag-v1',JSON.stringify(list));sessionStorage.setItem('balconia-design-context',JSON.stringify({designId:current.id,fulfilmentType:type}));sessionStorage.removeItem('balconia-order-request');location.href=type==='diy'?'cart.html':'checkout.html';}catch(e){$('#design-error').textContent=e.message;}}
+function updateTotal(){const list=selection();const total=list.some(x=>!Number.isInteger(x.quantity)||x.quantity>20)?'Check quantities':money(list.reduce((s,x)=>s+current.plan.items.find(p=>p.id===x.id).unitPricePaise*x.quantity,0));$('#selected-total').textContent=total;const topTotal=$('#selected-total-top');if(topTotal&&total!=='Check quantities')topTotal.textContent=total;const est=$('#estimate-total');if(est&&total!=='Check quantities')est.textContent=total;}
+async function toCheckout(type,targetUrl=null){try{if(type==='balconia'&&window.BalconiaCoverage?.requireMakeover){const ok=await window.BalconiaCoverage.requireMakeover();if(ok===false)return;}const list=validSelection();localStorage.setItem('balconia-bag-v1',JSON.stringify(list));sessionStorage.setItem('balconia-design-context',JSON.stringify({designId:current.id,fulfilmentType:type}));sessionStorage.removeItem('balconia-order-request');location.href=targetUrl||(type==='diy'?'checkout.html':'checkout.html');}catch(e){const err=$('#design-error');if(err){err.textContent=e.message;err.scrollIntoView({behavior:'smooth',block:'center'});}}}
 
 async function retryGenerate(){
   if(busy)return;
