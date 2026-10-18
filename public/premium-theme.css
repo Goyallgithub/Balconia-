@@ -28,3 +28,195 @@ footer .footer-connect{color:#f9f0de;border-color:#53664f}footer .footer-connect
 footer .logo{display:inline-flex;background:var(--balconia-paper);padding:8px 12px;border-radius:14px}
 footer small{color:#d5dfcd}
 @media(max-width:600px){body[data-page] .intro{padding:28px 20px;margin-top:22px;border-radius:16px}footer .logo{padding:6px 10px}}
+
+/* Full Mobile-Responsive Experience & Viewport Optimization (320px - 1440px) */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Safe areas for notched phones (iPhone X through 16 Pro Max) */
+body {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Touch Comfort: Minimum 44px tap targets for buttons, inputs, links */
+button, input, select, textarea, .btn, .button, .bag-step, .account-link, .cart-link {
+  min-height: 44px;
+}
+
+/* Prevent iOS Safari auto-zoom on input focus by ensuring >= 16px font-size */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile dialog optimization with keyboard open */
+dialog, .auth-dialog {
+  max-height: 88vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: auto;
+}
+
+/* Viewport 768px - 1024px (Tablets & Small Laptops) */
+@media (max-width: 1024px) {
+  .checkout-grid, .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 18px;
+  }
+}
+
+/* Viewport 430px - 768px (Phablets & Landscape Phones) */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 30px 5% 40px;
+    gap: 24px;
+    min-height: auto;
+  }
+  .hero-photo {
+    height: 380px;
+  }
+  .search-row {
+    flex-direction: column;
+  }
+  .search-row input, .search-row select {
+    width: 100%;
+  }
+  .form-fields {
+    grid-template-columns: 1fr;
+  }
+  .fulfillment-options {
+    grid-template-columns: 1fr;
+  }
+  .fulfillment-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+  .fulfillment-card input[type="radio"] {
+    display: inline-block !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    max-width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    margin: 3px 0 0 0 !important;
+    border: none !important;
+    background: transparent !important;
+    flex: 0 0 20px !important;
+  }
+  .fulfillment-card .card-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Viewport <= 500px (Standard Mobile: 360px - 430px) */
+@media (max-width: 500px) {
+  .shop-header {
+    padding: 14px 4vw;
+    gap: 10px;
+  }
+  .brand img {
+    width: 110px;
+    height: 52px;
+  }
+  .categories {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+  .categories::-webkit-scrollbar {
+    display: none;
+  }
+  .categories button {
+    flex-shrink: 0;
+    padding: 10px 16px;
+  }
+  .cart-item {
+    grid-template-columns: 70px 1fr;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .cart-item img {
+    max-width: 70px;
+    max-height: 80px;
+  }
+  .cart-item > strong {
+    grid-column: 1 / -1;
+    text-align: right;
+    margin-top: 4px;
+  }
+  .summary {
+    padding: 20px 16px;
+  }
+  /* Floating widget protection on cart and checkout */
+  body[data-page="checkout"] balconia-whatsapp-help,
+  body[data-page="cart"] balconia-whatsapp-help {
+    bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Viewport <= 360px (Ultra-compact mobile: 320px - 360px like iPhone SE 1st gen) */
+@media (max-width: 360px) {
+  body {
+    font-size: 14px;
+  }
+  h1 {
+    font-size: 32px !important;
+  }
+  h2 {
+    font-size: 24px !important;
+  }
+  .product-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .photo-button {
+    height: 220px !important;
+  }
+  .shop-header nav {
+    gap: 6px;
+    font-size: 10px;
+  }
+  .cart-link {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .account-link {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .panel {
+    padding: 14px 12px;
+  }
+  .auth-dialog {
+    padding: 20px 14px;
+  }
+  .auth-otp-input {
+    letter-spacing: 4px !important;
+    font-size: 18px !important;
+  }
+  .btn, .button {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+}

@@ -28,8 +28,8 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...      # service_role — server only, never comm
 Also keep:
 
 ```
-MAX_GENERATIONS_PER_USER=2
-OPENAI_IMAGE_MAX_GENERATIONS=2
+MAX_GENERATIONS_PER_USER=10
+OPENAI_IMAGE_MAX_GENERATIONS=10
 ```
 
 ## 4. Restart
@@ -44,4 +44,4 @@ Create a [Resend](https://resend.com) key and set `RESEND_API_KEY` + `ORDER_EMAI
 
 ## OpenAI caution
 
-Each AI image costs money. Cap is **2 completed images per signed-in user**. Global `OPENAI_IMAGE_MAX_GENERATIONS=2` is an extra safety net on your personal key until the client provides theirs.
+Each AI image costs money. Cap is **10 completed images per signed-in user**. Global `OPENAI_IMAGE_MAX_GENERATIONS=10` is an extra safety net on your personal key until the client provides theirs.

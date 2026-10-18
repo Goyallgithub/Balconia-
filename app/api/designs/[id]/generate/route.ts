@@ -12,6 +12,7 @@ import {
 import { editBalconyWithOpenAI } from "@/lib/openai-image";
 import { resolveImageProvider } from "@/lib/image-provider";
 import { buildMakeoverPrompt } from "@/lib/prompt";
+import { buildSpatialLayout } from "@/lib/spatial-engine";
 import {
   loadHeroProductRefs,
   referenceMapPrompt,
@@ -22,6 +23,7 @@ import {
   designPublicResult,
   getDesign,
   readDesignBytes,
+  reserveGenerationSlot,
   updateDesign,
   writeDesignRender,
 } from "@/lib/design-store";
@@ -30,6 +32,7 @@ import {
   supabaseConfigured,
   userFromRequest,
 } from "@/lib/supabase";
+import { isValidOrigin } from "@/lib/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,10 +57,17 @@ async function toJpeg(bytes: Buffer, max = 1536): Promise<Buffer> {
 }
 
 export async function POST(request: Request, { params }: Ctx) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!isValidOrigin(request)) {
     return json({ error: "Invalid request origin." }, 403);
   }
+
+  const id = params?.id?.trim();
+  if (!id || !/^[a-f0-9-]{36}$/i.test(id)) {
+    return json({ error: "Invalid design identifier." }, 400);
+  }
+
+  const authHeader = request.headers.get("authorization") || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : undefined;
 
   const provider = resolveImageProvider();
   if (!provider) {
@@ -71,10 +81,11 @@ export async function POST(request: Request, { params }: Ctx) {
     );
   }
 
-  const row = await getDesign(params.id);
+  const row = await getDesign(id);
   if (!row) return json({ error: "Design not found." }, 404);
 
-  if (supabaseConfigured() && row.ownerId) {
+
+  if (row.ownerId) {
     const user = await userFromRequest(request);
     if (!user || user.id !== row.ownerId) {
       return json(
@@ -82,33 +93,47 @@ export async function POST(request: Request, { params }: Ctx) {
         401
       );
     }
-    try {
-      await assertUserCanGenerate(user.id);
-    } catch (e) {
+
+    const reservation = await reserveGenerationSlot(row.ownerId, row.id);
+    if (!reservation.ok) {
+      if (reservation.status === "already_generating") {
+        return json(
+          {
+            error: "This design is already generating. Please wait.",
+            code: "already_generating",
+          },
+          409
+        );
+      }
+      if (reservation.status === "quota_exceeded") {
+        return json(
+          {
+            error: `You have used your ${MAX_GENERATIONS_PER_USER} personalised AI images. Contact Balconia if you need another concept.`,
+            code: "generation_limit",
+            generationsRemaining: reservation.remaining ?? 0,
+          },
+          429
+        );
+      }
+    }
+    if (reservation.status === "already_complete") {
+      return json(designPublicResult(reservation.design || row, token));
+    }
+  } else {
+    if (row.status === "complete" && row.outputPath) {
+      return json(designPublicResult(row, token));
+    }
+    if (row.status === "generating") {
       return json(
         {
-          error: e instanceof Error ? e.message : "Generation limit reached.",
-          code: "generation_limit",
+          error: "This design is already generating. Please wait.",
+          code: "already_generating",
         },
-        429
+        409
       );
     }
+    await updateDesign(row.id, { status: "generating", lastError: null });
   }
-
-  if (row.status === "complete" && row.outputPath) {
-    return json(designPublicResult(row));
-  }
-  if (row.status === "generating") {
-    return json(
-      {
-        error: "This design is already generating. Please wait.",
-        code: "already_generating",
-      },
-      409
-    );
-  }
-
-  await updateDesign(row.id, { status: "generating", lastError: null });
 
   try {
     const plan = row.plan as {
@@ -119,6 +144,16 @@ export async function POST(request: Request, { params }: Ctx) {
       subtotalPaise?: number;
       targetPaise?: number;
     };
+    if (!(plan as any).spatialLayout && plan?.answers && plan?.items) {
+      try {
+        (plan as any).spatialLayout = buildSpatialLayout({
+          answers: plan.answers as any,
+          items: plan.items as any,
+        });
+      } catch {
+        // preserve existing plan if spatialLayout creation fails
+      }
+    }
     const originalBytes = await readDesignBytes(row, "original");
     if (!originalBytes) throw new Error("missing_photo");
 
@@ -180,10 +215,10 @@ export async function POST(request: Request, { params }: Ctx) {
       outputPath,
       lastError: null,
     });
-    const out = designPublicResult(updated!) as ReturnType<
+    const out = designPublicResult(updated!, token) as ReturnType<
       typeof designPublicResult
     > & { referenceCount?: number };
-    if (row.ownerId && supabaseConfigured()) {
+    if (row.ownerId) {
       const used = await countCompletedGenerationsForUser(row.ownerId);
       out.generationsRemaining =
         MAX_GENERATIONS_PER_USER <= 0

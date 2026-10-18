@@ -1,6 +1,6 @@
 (()=>{const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n/100);let current=null,previewUrl=null,requestId=crypto.randomUUID(),busy=false,atelierTimer=null,atelierStage=0;
 let catalogProducts=[],extraIds=[],pickerLoaded=false;
-const EXTRA_MAX=6;
+const EXTRA_MAX=10;
 const CAT_NAMES={plants:'Plants & pots',lights:'Lighting',furniture:'Furniture',decor:'Decor',flooring:'Rugs & flooring'};
 
 const ATELIER_STAGES=[
@@ -92,6 +92,11 @@ function ensurePickerDialog(){
   document.body.appendChild(d);
   d.querySelector('.picker-close').onclick=()=>d.close();
   d.addEventListener('click',e=>{if(e.target===d)d.close();});
+  d.addEventListener('close',()=>{
+    if(d._originScroll!=null&&Math.abs((window.scrollY||document.documentElement.scrollTop)-d._originScroll)>1){
+      window.scrollTo({top:d._originScroll,behavior:'instant'});
+    }
+  });
   const draw=()=>{
     const q=($('#picker-search').value||'').toLowerCase().trim();
     const cat=$('#picker-category').value;
@@ -123,13 +128,21 @@ function ensurePickerDialog(){
   return d;
 }
 
-async function openCataloguePicker(){
+async function openCataloguePicker(e){
+  if(e?.preventDefault)e.preventDefault();
+  const currentScroll=window.scrollY||document.documentElement.scrollTop;
   try{
     await loadCatalog();
     const d=ensurePickerDialog();
+    d._originScroll=currentScroll;
     d._draw();
-    if(!d.open)d.showModal();
-  }catch(e){error(e.message);}
+    if(!d.open){
+      d.showModal();
+      if(Math.abs((window.scrollY||document.documentElement.scrollTop)-currentScroll)>1){
+        window.scrollTo({top:currentScroll,behavior:'instant'});
+      }
+    }
+  }catch(err){error(err.message);}
 }
 
 $('#open-catalogue-picker')?.addEventListener('click',openCataloguePicker);

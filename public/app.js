@@ -15,3 +15,173 @@ const dialog=document.getElementById('concept-dialog');cards.addEventListener('c
 
 const lengthInput=document.getElementById('length'),widthInput=document.getElementById('width');
 [lengthInput,widthInput].forEach(x=>x.addEventListener('input',()=>{const l=Number(lengthInput.value),w=Number(widthInput.value);document.getElementById('area-note').textContent=l>0&&w>0?'Your balcony: '+(l*w).toFixed(1)+' sq ft. Door swing and usable width still matter.':'Exact dimensions help us think beyond square footage.'}));
+
+function initMobileSliders(){
+  const cardsEl=document.getElementById('cards');
+  const cardsPrev=document.getElementById('cards-prev');
+  const cardsNext=document.getElementById('cards-next');
+  const cardsDots=document.getElementById('cards-dots');
+
+  function updateCardsSlider(){
+    if(!cardsEl||!cardsDots)return;
+    const visibleCards=[...cardsEl.querySelectorAll('.card:not([hidden])')];
+    cardsDots.innerHTML='';
+    if(visibleCards.length<=1){
+      if(cardsPrev)cardsPrev.style.display='none';
+      if(cardsNext)cardsNext.style.display='none';
+      return;
+    }
+    if(cardsPrev)cardsPrev.style.display='';
+    if(cardsNext)cardsNext.style.display='';
+
+    visibleCards.forEach((c,idx)=>{
+      const dot=document.createElement('button');
+      dot.type='button';
+      dot.className='slider-dot'+(idx===0?' active':'');
+      dot.setAttribute('aria-label',`Go to slide ${idx+1}`);
+      dot.onclick=()=>c.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+      cardsDots.appendChild(dot);
+    });
+    syncCardsActiveDot();
+  }
+
+  function syncCardsActiveDot(){
+    if(!cardsEl||!cardsDots)return;
+    const visibleCards=[...cardsEl.querySelectorAll('.card:not([hidden])')];
+    if(!visibleCards.length)return;
+    const scrollLeft=cardsEl.scrollLeft;
+    let closestIndex=0,minDiff=Infinity;
+    visibleCards.forEach((c,i)=>{
+      const diff=Math.abs(c.offsetLeft-cardsEl.offsetLeft-scrollLeft);
+      if(diff<minDiff){minDiff=diff;closestIndex=i;}
+    });
+    const dots=cardsDots.querySelectorAll('.slider-dot');
+    dots.forEach((d,i)=>d.classList.toggle('active',i===closestIndex));
+    if(cardsPrev)cardsPrev.disabled=scrollLeft<=4;
+    if(cardsNext)cardsNext.disabled=scrollLeft>=cardsEl.scrollWidth-cardsEl.clientWidth-4;
+  }
+
+  if(cardsEl){
+    cardsEl.addEventListener('scroll',syncCardsActiveDot,{passive:true});
+    if(cardsPrev){
+      cardsPrev.onclick=()=>{
+        const firstCard=cardsEl.querySelector('.card:not([hidden])');
+        const scrollAmount=firstCard?(firstCard.offsetWidth+16):280;
+        cardsEl.scrollBy({left:-scrollAmount,behavior:'smooth'});
+      };
+    }
+    if(cardsNext){
+      cardsNext.onclick=()=>{
+        const firstCard=cardsEl.querySelector('.card:not([hidden])');
+        const scrollAmount=firstCard?(firstCard.offsetWidth+16):280;
+        cardsEl.scrollBy({left:scrollAmount,behavior:'smooth'});
+      };
+    }
+    updateCardsSlider();
+  }
+
+  document.querySelectorAll('[data-filter]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      cardsEl.scrollTo({left:0,behavior:'instant'});
+      setTimeout(updateCardsSlider,60);
+    });
+  });
+
+  const stepsEl=document.querySelector('.steps');
+  const stepsPrev=document.getElementById('steps-prev');
+  const stepsNext=document.getElementById('steps-next');
+  const stepsDots=document.getElementById('steps-dots');
+
+  if(stepsEl&&stepsDots){
+    stepsDots.innerHTML='';
+    const articles=[...stepsEl.querySelectorAll('article')];
+    const totalPages=Math.ceil(articles.length/2);
+
+    for(let p=0;p<totalPages;p++){
+      const dot=document.createElement('button');
+      dot.type='button';
+      dot.className='slider-dot'+(p===0?' active':'');
+      dot.setAttribute('aria-label',`Steps slide ${p+1}`);
+      const pageIndex=p;
+      dot.onclick=()=>{
+        const target=articles[pageIndex*2];
+        if(target)target.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+      };
+      stepsDots.appendChild(dot);
+    }
+
+    function syncStepsActiveDot(){
+      const scrollLeft=stepsEl.scrollLeft;
+      const maxScroll=stepsEl.scrollWidth-stepsEl.clientWidth;
+      const progress=maxScroll>0?scrollLeft/maxScroll:0;
+      const activePage=Math.min(totalPages-1,Math.max(0,Math.round(progress*(totalPages-1))));
+      const dots=stepsDots.querySelectorAll('.slider-dot');
+      dots.forEach((d,i)=>d.classList.toggle('active',i===activePage));
+      if(stepsPrev)stepsPrev.disabled=scrollLeft<=4;
+      if(stepsNext)stepsNext.disabled=scrollLeft>=maxScroll-4;
+    }
+
+    stepsEl.addEventListener('scroll',syncStepsActiveDot,{passive:true});
+    if(stepsPrev){
+      stepsPrev.onclick=()=>{
+        stepsEl.scrollBy({left:-stepsEl.clientWidth,behavior:'smooth'});
+      };
+    }
+    if(stepsNext){
+      stepsNext.onclick=()=>{
+        stepsEl.scrollBy({left:stepsEl.clientWidth,behavior:'smooth'});
+      };
+    }
+    syncStepsActiveDot();
+  }
+
+  const layersEl=document.querySelector('.layers');
+  const layersPrev=document.getElementById('layers-prev');
+  const layersNext=document.getElementById('layers-next');
+  const layersDots=document.getElementById('layers-dots');
+
+  if(layersEl&&layersDots){
+    layersDots.innerHTML='';
+    const articles=[...layersEl.querySelectorAll('article')];
+    const totalPages=Math.ceil(articles.length/2);
+
+    for(let p=0;p<totalPages;p++){
+      const dot=document.createElement('button');
+      dot.type='button';
+      dot.className='slider-dot'+(p===0?' active':'');
+      dot.setAttribute('aria-label',`Recipe slide ${p+1}`);
+      const pageIndex=p;
+      dot.onclick=()=>{
+        const target=articles[pageIndex*2];
+        if(target)target.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+      };
+      layersDots.appendChild(dot);
+    }
+
+    function syncLayersActiveDot(){
+      const scrollLeft=layersEl.scrollLeft;
+      const maxScroll=layersEl.scrollWidth-layersEl.clientWidth;
+      const progress=maxScroll>0?scrollLeft/maxScroll:0;
+      const activePage=Math.min(totalPages-1,Math.max(0,Math.round(progress*(totalPages-1))));
+      const dots=layersDots.querySelectorAll('.slider-dot');
+      dots.forEach((d,i)=>d.classList.toggle('active',i===activePage));
+      if(layersPrev)layersPrev.disabled=scrollLeft<=4;
+      if(layersNext)layersNext.disabled=scrollLeft>=maxScroll-4;
+    }
+
+    layersEl.addEventListener('scroll',syncLayersActiveDot,{passive:true});
+    if(layersPrev){
+      layersPrev.onclick=()=>{
+        layersEl.scrollBy({left:-layersEl.clientWidth,behavior:'smooth'});
+      };
+    }
+    if(layersNext){
+      layersNext.onclick=()=>{
+        layersEl.scrollBy({left:layersEl.clientWidth,behavior:'smooth'});
+      };
+    }
+    syncLayersActiveDot();
+  }
+}
+
+initMobileSliders();

@@ -26,4 +26,53 @@
 .home-reviews .section-head{max-width:1100px;margin:0 auto 28px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end}
 .home-reviews .reviews-grid{max-width:1100px;margin:0 auto}
 .home-reviews .more-link{font-size:13px;text-decoration:underline;text-underline-offset:3px}
-@media(max-width:700px){.legal-page{padding-top:32px}.home-reviews .section-head{align-items:flex-start}}
+@media(max-width:700px){
+  .legal-page{padding-top:32px}
+  .home-reviews{
+    padding:28px 5% 24px!important;
+  }
+  .home-reviews .section-head{
+    align-items:flex-start;
+    margin-bottom:12px!important;
+    gap:6px!important;
+  }
+  .home-reviews .section-head .eyebrow{
+    font-size:8px!important;
+    letter-spacing:1px!important;
+  }
+  .home-reviews .section-head h2{
+    font-size:clamp(23px,6vw,27px)!important;
+    margin:4px 0 6px!important;
+    line-height:1.15!important;
+  }
+  .home-reviews .more-link{
+    font-size:11px!important;
+  }
+  .home-reviews .reviews-grid{
+    gap:10px!important;
+    margin:10px 0 0!important;
+    grid-template-columns:1fr!important;
+  }
+  .home-reviews .review-card{
+    padding:12px 14px 14px!important;
+    border-radius:12px!important;
+  }
+  .home-reviews .review-card .stars{
+    font-size:10px!important;
+    letter-spacing:1.2px!important;
+    margin-bottom:5px!important;
+  }
+  .home-reviews .review-card blockquote{
+    font-size:11.5px!important;
+    line-height:1.4!important;
+    margin:0 0 8px!important;
+  }
+  .home-reviews .review-card cite{
+    font-size:10.5px!important;
+  }
+  .home-reviews .review-card cite span{
+    font-size:9px!important;
+    margin-top:2px!important;
+  }
+}
+

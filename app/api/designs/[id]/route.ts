@@ -10,6 +10,7 @@ import {
   supabaseConfigured,
   userFromRequest,
 } from "@/lib/supabase";
+import { isValidOrigin } from "@/lib/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,16 +25,25 @@ function json(data: unknown, status = 200) {
 type Ctx = { params: { id: string } };
 
 export async function GET(request: Request, { params }: Ctx) {
-  const row = await getDesign(params.id);
+  const id = params?.id?.trim();
+  if (!id || !/^[a-f0-9-]{36}$/i.test(id)) {
+    return json({ error: "Invalid design identifier." }, 400);
+  }
+
+  const row = await getDesign(id);
   if (!row) return json({ error: "Design not found." }, 404);
+
+  const authHeader = request.headers.get("authorization") || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : undefined;
+
   if (supabaseConfigured() && row.ownerId) {
     const user = await userFromRequest(request);
     if (!user || user.id !== row.ownerId) {
       return json({ error: "Design not found or access denied." }, 404);
     }
   }
-  const out = designPublicResult(row);
-  if (row.ownerId && supabaseConfigured()) {
+  const out = designPublicResult(row, token);
+  if (row.ownerId) {
     const used = await countCompletedGenerationsForUser(row.ownerId);
     out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
   }
@@ -41,8 +51,7 @@ export async function GET(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(request: Request, { params }: Ctx) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!isValidOrigin(request)) {
     return json({ error: "Invalid request origin." }, 403);
   }
   const row = await getDesign(params.id);

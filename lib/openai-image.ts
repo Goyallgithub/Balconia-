@@ -88,6 +88,7 @@ export async function editBalconyWithOpenAI(input: {
       method: "POST",
       headers: { authorization: `Bearer ${key}` },
       body: buildForm(withFidelity),
+      signal: AbortSignal.timeout(60000),
     });
     const json = (await res.json().catch(() => null)) as {
       error?: { message?: string };

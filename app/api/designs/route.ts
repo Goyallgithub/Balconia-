@@ -16,6 +16,7 @@ import {
   supabaseConfigured,
   userFromRequest,
 } from "@/lib/supabase";
+import { isValidOrigin } from "@/lib/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,7 +47,7 @@ function sniffMime(bytes: Uint8Array): string | null {
 export async function GET(request: Request) {
   const user = await userFromRequest(request);
   let generationsRemaining: number | null = null;
-  if (user && supabaseConfigured()) {
+  if (user) {
     const used = await countCompletedGenerationsForUser(user.id);
     generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
   }
@@ -61,8 +62,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const origin = request.headers.get("origin");
-    if (origin && origin !== new URL(request.url).origin) {
+    if (!isValidOrigin(request)) {
       return json({ error: "Invalid request origin." }, 403);
     }
 
@@ -95,10 +95,13 @@ export async function POST(request: Request) {
       return json({ error: "Invalid request reference." }, 400);
     }
 
+    const authHeader = request.headers.get("authorization") || "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : undefined;
+
     const existing = await findByRequestId(requestId, user?.id);
     if (existing) {
-      const out = designPublicResult(existing);
-      if (user && supabaseConfigured()) {
+      const out = designPublicResult(existing, token);
+      if (user) {
         const used = await countCompletedGenerationsForUser(user.id);
         out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
       }
@@ -121,7 +124,8 @@ export async function POST(request: Request) {
     }
 
     const dayAgo = new Date(Date.now() - 86400000).toISOString();
-    if ((await countDesignsSince(dayAgo)) >= 80) {
+    const maxDaily = Number(process.env.DAILY_DESIGN_LIMIT || "500");
+    if ((await countDesignsSince(dayAgo)) >= maxDaily) {
       return json(
         {
           error:
@@ -169,15 +173,15 @@ export async function POST(request: Request) {
       ownerId: user?.id || null,
     });
 
-    const out = designPublicResult(record);
-    if (user && supabaseConfigured()) {
+    const out = designPublicResult(record, token);
+    if (user) {
       const used = await countCompletedGenerationsForUser(user.id);
       out.generationsRemaining = MAX_GENERATIONS_PER_USER <= 0 ? null : Math.max(0, MAX_GENERATIONS_PER_USER - used);
     }
     return json(out, 201);
   } catch (e) {
     const message = e instanceof Error ? e.message : "";
-    const client = /Please|Invalid|check your/i.test(message);
+    const client = /Please|Invalid|check your|catalogue|selection|limit/i.test(message);
     return json(
       {
         error: client

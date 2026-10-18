@@ -39,4 +39,15 @@ export async function findByRequestId(
   return null;
 }
 
+export async function getOrderById(id: string): Promise<Record<string, unknown> | null> {
+  const dir = await ensureDataDir("orders");
+  const filePath = path.join(dir, `${id}.json`);
+  try {
+    const raw = JSON.parse(await fs.readFile(filePath, "utf8")) as Record<string, unknown>;
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
 export { ensure as ensureOrdersDir };

@@ -48,7 +48,7 @@ async function toJpeg(bytes: Buffer, max = 1024): Promise<Buffer> {
  */
 export async function loadHeroProductRefs(
   items: PlanItem[],
-  maxRefs = 8
+  maxRefs = 10
 ): Promise<ProductRef[]> {
   const catalog = products as CatalogProduct[];
 

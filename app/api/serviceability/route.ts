@@ -4,6 +4,7 @@ import {
   config,
   resolveCoverage,
 } from "@/lib/serviceability.mjs";
+import { isValidOrigin } from "@/lib/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,8 +35,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!isValidOrigin(request)) {
     return json({ error: "Invalid request origin." }, 403);
   }
 

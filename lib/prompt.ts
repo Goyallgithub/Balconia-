@@ -1,3 +1,5 @@
+import { formatLayoutForPrompt, type SpatialLayout } from "@/lib/spatial-engine";
+
 type PlanItem = {
   quantity: number;
   name: string;
@@ -22,6 +24,7 @@ type Plan = {
   budgetTier?: number;
   subtotalPaise?: number;
   targetPaise?: number;
+  spatialLayout?: SpatialLayout;
 };
 
 const MOOD_LABEL: Record<string, string> = {
@@ -111,6 +114,11 @@ ${densityDirection(plan.budgetTier, budget)}
 APPROVED PRODUCTS AND PLACEMENT (${plan.items.length} items — use all that fit):
 ${products || "No priced products selected — do not invent furniture."}
 
+PLANT & PLANTER PAIRING RULE (Strict 1:1 Match):
+Show exactly the approved plants, each potted inside its matching decorative planter. Every plant must have a planter; no plant is unpotted, and no planter is left empty without a plant. Do not generate extra random pots or plants beyond the approved count.
+
+${plan.spatialLayout ? formatLayoutForPrompt(plan.spatialLayout) : ""}
+
 Use only these approved additions. Match their visible shapes,
 materials and colours as closely as possible.
 Scale furniture and planters realistically to the supplied dimensions.
@@ -131,6 +139,7 @@ One sharp photographic after-makeover image of this same balcony.
 No collage, before-and-after split, people, text, prices, labels,
 watermarks, distorted furniture, floating objects, duplicate items
 or decoration beyond the approved product list.
+(Architectural concept visualization — final construction clearances verified separately).
 
 Additional notes: ${plan.notes.join(" ")}`;
 }

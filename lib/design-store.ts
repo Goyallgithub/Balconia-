@@ -64,28 +64,160 @@ function rowFromDb(row: Record<string, unknown>): DesignRecord {
   };
 }
 
+// User-level concurrency lock to prevent race conditions during quota reservation
+const userLocks = new Map<string, Promise<unknown>>();
+
+export async function withUserLock<T>(userId: string, fn: () => Promise<T>): Promise<T> {
+  const prev = userLocks.get(userId) || Promise.resolve();
+  let release: () => void;
+  const current = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  userLocks.set(userId, prev.then(() => current, () => current));
+
+  try {
+    await prev;
+    return await fn();
+  } finally {
+    release!();
+    if (userLocks.get(userId) === current) {
+      userLocks.delete(userId);
+    }
+  }
+}
+
 export async function countCompletedGenerationsForUser(
   ownerId: string
 ): Promise<number> {
-  if (!supabaseConfigured()) return 0;
-  const { count, error } = await supabaseAdmin()
-    .from("balcony_designs")
-    .select("id", { count: "exact", head: true })
-    .eq("owner_id", ownerId)
-    .eq("status", "complete");
-  if (error) throw new Error(error.message);
-  return count || 0;
+  if (supabaseConfigured()) {
+    const { count, error } = await supabaseAdmin()
+      .from("balcony_designs")
+      .select("id", { count: "exact", head: true })
+      .eq("owner_id", ownerId)
+      .eq("status", "complete");
+    if (error) throw new Error(error.message);
+    return count || 0;
+  }
+  await ensureRoot();
+  const entries = await fs.readdir(root()).catch(() => [] as string[]);
+  let count = 0;
+  for (const id of entries) {
+    const d = await getDesign(id);
+    if (d && d.ownerId === ownerId && d.status === "complete") {
+      count++;
+    }
+  }
+  return count;
+}
+
+export async function countActiveAndCompletedGenerationsForUser(
+  ownerId: string
+): Promise<{ completed: number; active: number; total: number }> {
+  const staleThreshold = 5 * 60 * 1000; // 5 minutes
+  const now = Date.now();
+
+  if (supabaseConfigured()) {
+    const { data, error } = await supabaseAdmin()
+      .from("balcony_designs")
+      .select("id, status, created_at, updated_at")
+      .eq("owner_id", ownerId)
+      .in("status", ["complete", "generating"]);
+    if (error) throw new Error(error.message);
+
+    let completed = 0;
+    let active = 0;
+    for (const row of (data as Array<Record<string, unknown>>) || []) {
+      if (row.status === "complete") {
+        completed++;
+      } else if (row.status === "generating") {
+        const time = new Date(String(row.updated_at || row.created_at)).getTime();
+        if (now - time < staleThreshold) {
+          active++;
+        }
+      }
+    }
+    return { completed, active, total: completed + active };
+  }
+
+  await ensureRoot();
+  const entries = await fs.readdir(root()).catch(() => [] as string[]);
+  let completed = 0;
+  let active = 0;
+  for (const id of entries) {
+    const d = await getDesign(id);
+    if (!d || d.ownerId !== ownerId) continue;
+    if (d.status === "complete") {
+      completed++;
+    } else if (d.status === "generating") {
+      const time = new Date(d.createdAt).getTime();
+      if (now - time < staleThreshold) {
+        active++;
+      }
+    }
+  }
+  return { completed, active, total: completed + active };
 }
 
 export async function assertUserCanGenerate(ownerId: string): Promise<void> {
   // MAX_GENERATIONS_PER_USER <= 0 means unlimited (local testing)
   if (MAX_GENERATIONS_PER_USER <= 0) return;
-  const used = await countCompletedGenerationsForUser(ownerId);
-  if (used >= MAX_GENERATIONS_PER_USER) {
+  const { total } = await countActiveAndCompletedGenerationsForUser(ownerId);
+  if (total >= MAX_GENERATIONS_PER_USER) {
     throw new Error(
       `You have used your ${MAX_GENERATIONS_PER_USER} personalised AI images. Contact Balconia if you need another concept.`
     );
   }
+}
+
+export async function reserveGenerationSlot(
+  ownerId: string,
+  designId: string
+): Promise<{
+  ok: boolean;
+  status: "reserved" | "already_complete" | "already_generating" | "quota_exceeded";
+  design?: DesignRecord | null;
+  remaining?: number;
+}> {
+  return withUserLock(ownerId, async () => {
+    const row = await getDesign(designId);
+    if (!row) throw new Error("Design not found.");
+
+    if (row.status === "complete" && row.outputPath) {
+      return { ok: true, status: "already_complete", design: row };
+    }
+
+    if (row.status === "generating") {
+      const time = new Date(row.createdAt).getTime();
+      if (Date.now() - time < 5 * 60 * 1000) {
+        return { ok: false, status: "already_generating", design: row };
+      }
+    }
+
+    if (MAX_GENERATIONS_PER_USER > 0) {
+      const counts = await countActiveAndCompletedGenerationsForUser(ownerId);
+      if (counts.total >= MAX_GENERATIONS_PER_USER) {
+        return {
+          ok: false,
+          status: "quota_exceeded",
+          design: row,
+          remaining: Math.max(0, MAX_GENERATIONS_PER_USER - counts.completed),
+        };
+      }
+    }
+
+    const updated = await updateDesign(designId, {
+      status: "generating",
+      lastError: null,
+    });
+
+    const countsAfter = await countActiveAndCompletedGenerationsForUser(ownerId);
+    const remaining =
+      MAX_GENERATIONS_PER_USER <= 0
+        ? 999
+        : Math.max(0, MAX_GENERATIONS_PER_USER - countsAfter.completed);
+
+    return { ok: true, status: "reserved", design: updated, remaining };
+  });
 }
 
 export async function saveDesign(input: {
@@ -327,18 +459,20 @@ export async function writeDesignRender(
   return outputPath;
 }
 
-export function designPublicResult(row: DesignRecord) {
+export function designPublicResult(row: DesignRecord, token?: string) {
+  const tokenParam = token ? `&token=${encodeURIComponent(token)}` : "";
   return {
     id: row.id,
     status: row.status,
     plan: row.plan,
     answers: row.answers,
-    originalUrl: `/api/designs/${row.id}/image?kind=original`,
+    originalUrl: `/api/designs/${row.id}/image?kind=original${tokenParam}`,
     renderUrl: row.outputPath
-      ? `/api/designs/${row.id}/image?kind=render`
+      ? `/api/designs/${row.id}/image?kind=render${tokenParam}`
       : null,
     generationAvailable: generationAvailable(),
     lastError: row.status === "failed" ? row.lastError : null,
     generationsRemaining: null as number | null,
   };
 }
+

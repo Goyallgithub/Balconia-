@@ -8,24 +8,37 @@ export const dynamic = "force-dynamic";
 type Ctx = { params: { id: string } };
 
 export async function GET(request: Request, { params }: Ctx) {
+  const id = params?.id?.trim();
+  if (!id || !/^[a-f0-9-]{36}$/i.test(id)) {
+    return NextResponse.json({ error: "Invalid design identifier" }, { status: 400 });
+  }
+
+  // Authentication check first
+  const user = await userFromRequest(request);
+  if (!user) {
+    return NextResponse.json(
+      { error: "Authentication required to access design images" },
+      { status: 401 }
+    );
+  }
+
+  const row = await getDesign(id);
+  if (!row) {
+    return NextResponse.json({ error: "Design not found" }, { status: 404 });
+  }
+
+  // Authorization check: only design owner can access their design images
+  if (row.ownerId && user.id !== row.ownerId) {
+    return NextResponse.json(
+      { error: "Access denied: you do not own this design image" },
+      { status: 403 }
+    );
+  }
+
   const kind =
     new URL(request.url).searchParams.get("kind") === "render"
       ? "render"
       : "original";
-  const row = await getDesign(params.id);
-  if (!row) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  if (supabaseConfigured() && row.ownerId) {
-    const user = await userFromRequest(request);
-    // Allow cookie-less <img> loads: signed query token optional; for private buckets
-    // we stream via service role after checking design exists. Ownership enforced on
-    // mutate routes; image URLs are unguessable UUIDs.
-    if (user && user.id !== row.ownerId) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
 
   const bytes = await readDesignBytes(row, kind);
   if (!bytes) {
@@ -36,7 +49,8 @@ export async function GET(request: Request, { params }: Ctx) {
     headers: {
       "Content-Type":
         kind === "render" ? "image/webp" : row.originalMime || "image/webp",
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "private, no-transform, max-age=3600",
     },
   });
 }
+

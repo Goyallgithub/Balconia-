@@ -11,6 +11,7 @@ import {
 import { findByRequestId, saveJsonRecord } from "@/lib/order-store";
 import { sendOrderEmails } from "@/lib/email";
 import { supabaseAdmin, supabaseConfigured, userFromRequest } from "@/lib/supabase";
+import { isValidOrigin } from "@/lib/origin";
 
 /** Soft-launch gate: NCR state + serviceable PIN. Full street geocode can come later with ArcGIS. */
 async function assertDelhiNcrOrder(
@@ -38,10 +39,8 @@ async function assertDelhiNcrOrder(
     );
   }
   const installationRequired =
-    fulfilmentType === "balconia" ||
-    items.some((x) =>
-      itemNeedsInstallation(products.find((p: { id: string }) => p.id === x.id))
-    );
+    fulfilmentType === "installation" ||
+    fulfilmentType === "balconia";
   if (installationRequired && postal.makeover === "unavailable") {
     throw new CoverageError(
       "Makeover installation is not available for this PIN. You can still request DIY product delivery if your area is covered.",
@@ -62,8 +61,7 @@ function json(data: unknown, status = 200) {
 }
 
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!isValidOrigin(request)) {
     return json({ error: "Invalid request origin." }, 403);
   }
 
@@ -78,11 +76,16 @@ export async function POST(request: Request) {
         .eq("request_id", String(body?.requestId || ""))
         .maybeSingle();
       if (existing) {
+        const isInst = existing.fulfilment_type === "installation" || existing.fulfilment_type === "balconia";
         return json({
           id: existing.id,
           subtotalPaise: existing.subtotal_paise,
           status: existing.status,
           fulfilmentType: existing.fulfilment_type,
+          fulfilmentLabel: isInst
+            ? "Option B: Products + Professional Installation"
+            : "Option A: Products Only — DIY",
+          duplicate: true,
         });
       }
     } else {
@@ -91,22 +94,35 @@ export async function POST(request: Request) {
         String(body?.requestId || "")
       );
       if (existing) {
+        const isInst = existing.fulfilmentType === "installation" || existing.fulfilmentType === "balconia";
         return json({
           id: existing.id,
           subtotalPaise: existing.subtotalPaise,
+          totalPaise: existing.totalPaise || existing.subtotalPaise,
           status: existing.status,
           fulfilmentType: existing.fulfilmentType,
+          fulfilmentLabel: isInst
+            ? "Option B: Products + Professional Installation"
+            : "Option A: Products Only — DIY",
+          duplicate: true,
+          fees: existing.fees,
         });
       }
     }
 
     const order = validateOrder(body, products);
-    const fulfilmentType =
-      body.fulfilmentType === "balconia" ? "balconia" : "diy";
-    if (
-      fulfilmentType === "balconia" &&
-      (!body.designId || body.serviceAcknowledged !== true)
-    ) {
+    const rawType = String(body.fulfilmentType || "").trim().toLowerCase();
+    const isInstallation =
+      rawType === "installation" ||
+      rawType === "balconia" ||
+      rawType === "option_b" ||
+      rawType === "products_installation";
+    const fulfilmentType = isInstallation ? "installation" : "diy";
+    const fulfilmentLabel = isInstallation
+      ? "Option B: Products + Professional Installation"
+      : "Option A: Products Only — DIY";
+
+    if (isInstallation && body.serviceAcknowledged !== true) {
       throw new Error(
         "Please confirm that installation and delivery will be quoted before your makeover is confirmed."
       );
@@ -133,11 +149,7 @@ export async function POST(request: Request) {
       String(body?.couponCode || "")
         .trim()
         .toUpperCase() === "BALCONIA";
-    const installNeeded =
-      fulfilmentType === "balconia" ||
-      (order.items as Array<{ id: string }>).some((line) =>
-        itemNeedsInstallation(products.find((p: { id: string }) => p.id === line.id))
-      );
+    const installNeeded = isInstallation;
     // Diwali code BALCONIA unlocks free shipping at ₹500+ / free installation at ₹1,000+
     const shippingPaise =
       couponOk && order.subtotalPaise >= FREE_SHIP_PAISE ? 0 : SHIP_FEE_PAISE;
@@ -148,13 +160,18 @@ export async function POST(request: Request) {
         : INSTALL_FEE_PAISE
       : 0;
     const installationFree = installNeeded && installationPaise === 0;
+    const totalPaise = order.subtotalPaise + shippingPaise + installationPaise;
     const fees = {
       couponCode: couponOk ? "BALCONIA" : null,
+      fulfilmentType,
+      fulfilmentLabel,
       shippingPaise,
       installationPaise,
       shippingFree,
       installationFree,
       installNeeded,
+      subtotalPaise: order.subtotalPaise,
+      totalPaise,
       note: couponOk
         ? [
             shippingFree
@@ -181,7 +198,7 @@ export async function POST(request: Request) {
       "-" +
       randomUUID().slice(0, 8).toUpperCase();
     const status =
-      fulfilmentType === "balconia"
+      isInstallation
         ? "pending_service_quote"
         : "pending_confirmation";
 
@@ -194,8 +211,10 @@ export async function POST(request: Request) {
       customer: order.customer,
       items: order.items,
       subtotalPaise: order.subtotalPaise,
+      totalPaise,
       designId: body.designId || null,
       fulfilmentType,
+      fulfilmentLabel,
       shippingStatus: shippingFree
         ? "free"
         : shippingPaise > 0
@@ -254,8 +273,10 @@ export async function POST(request: Request) {
       {
         id,
         subtotalPaise: order.subtotalPaise,
+        totalPaise,
         status,
         fulfilmentType,
+        fulfilmentLabel,
         emailSent: mail.sent,
         fees,
       },

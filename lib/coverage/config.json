@@ -33,6 +33,411 @@
     "https://www.indiapost.gov.in/VAS/DOP_PDFFiles/FunctionalPOs.pdf"
   ],
   "pins": {
+    "110001": {
+      "localities": [
+        "Connaught Place",
+        "New Delhi",
+        "Barakhamba Road"
+      ],
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": false,
+      "makeover": "unavailable",
+      "coverageStatus": "delivery-only",
+      "region": "Delhi",
+      "city": "New Delhi"
+    },
+    "110010": {
+      "localities": [
+        "Delhi Cantt",
+        "Dhaula Kuan",
+        "Subroto Park",
+        "APS Colony"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110016": {
+      "localities": [
+        "Hauz Khas",
+        "Green Park",
+        "IIT Delhi",
+        "Safdarjung Enclave"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110017": {
+      "localities": [
+        "Malviya Nagar",
+        "Saket",
+        "Panchsheel Park",
+        "Sarvodaya Enclave"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110021": {
+      "localities": [
+        "Chanakyapuri",
+        "Moti Bagh",
+        "Anand Niketan",
+        "Shanti Niketan"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110022": {
+      "localities": [
+        "R K Puram",
+        "Rama Krishna Puram"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110030": {
+      "localities": [
+        "Mehrauli",
+        "Qutab",
+        "Lado Sarai"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110037": {
+      "localities": [
+        "Mahipalpur",
+        "Kapashera",
+        "Delhi Aerocity"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110038": {
+      "localities": [
+        "Rajokri",
+        "Samalkha"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110045": {
+      "localities": [
+        "Palam",
+        "Indira Gandhi International Airport",
+        "Palam Village"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110047": {
+      "localities": [
+        "Aya Nagar",
+        "Arjan Garh"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110057": {
+      "localities": [
+        "Vasant Vihar",
+        "Basant Lok"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110061": {
+      "localities": [
+        "Munirka",
+        "Munirka DDA Flats"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110062": {
+      "localities": [
+        "Khanpur",
+        "Pushp Vihar",
+        "Dakshinpuri",
+        "Madangir"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110066": {
+      "localities": [
+        "Bhikaji Cama Place",
+        "RK Puram Sector 1-4",
+        "Mohammadpur"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110067": {
+      "localities": [
+        "JNU",
+        "Munirka New Campus"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110068": {
+      "localities": [
+        "Neb Sarai",
+        "Saket Court",
+        "IGNOU",
+        "Maidan Garhi"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110070": {
+      "localities": [
+        "Vasant Kunj",
+        "Masoodpur"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110071": {
+      "localities": [
+        "Bijwasan",
+        "Kapashera Border"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110074": {
+      "localities": [
+        "Chhattarpur",
+        "Fatehpur Beri",
+        "Chandanhula"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110075": {
+      "localities": [
+        "Dwarka Sector 6",
+        "Dwarka Sector 10",
+        "Dwarka"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110077": {
+      "localities": [
+        "Dwarka Sector 12",
+        "Dwarka Sector 19",
+        "Dwarka Sector 23"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110080": {
+      "localities": [
+        "Mandi",
+        "Asola",
+        "Bhati Mines"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
+    "110097": {
+      "localities": [
+        "Vasant Kunj Sector A",
+        "Vasant Kunj Sector D"
+      ],
+      "region": "Delhi",
+      "city": "New Delhi",
+      "requiresLocation": true,
+      "source": "https://delhi.gov.in",
+      "preliminaryOnly": true,
+      "verified": true,
+      "enabled": true,
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation",
+      "coverageStatus": "delivery-and-installation"
+    },
     "122001": {
       "localities": [
         "Gurgaon H.O",
@@ -51,7 +456,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122002": {
       "localities": [
@@ -64,7 +473,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122003": {
       "localities": [
@@ -78,7 +491,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122004": {
       "localities": [
@@ -91,7 +508,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122005": {
       "localities": [
@@ -102,7 +523,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122006": {
       "localities": [
@@ -116,7 +541,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122007": {
       "localities": [
@@ -127,7 +556,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122008": {
       "localities": [
@@ -138,7 +571,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122009": {
       "localities": [
@@ -149,7 +586,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122010": {
       "localities": [
@@ -160,7 +601,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122011": {
       "localities": [
@@ -171,7 +616,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122012": {
       "localities": [
@@ -184,7 +633,11 @@
       "verificationNote": "India Post search-index record; original PDF now returns 404. Municipality overlap requires exact location.",
       "requiresLocationBeforeBrowsing": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122015": {
       "localities": [
@@ -196,7 +649,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122016": {
       "localities": [
@@ -208,7 +665,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122017": {
       "localities": [
@@ -220,7 +681,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122018": {
       "localities": [
@@ -232,7 +697,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122022": {
       "localities": [],
@@ -252,8 +721,12 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities",
-      "requiresLocationBeforeBrowsing": true
+      "coverageStatus": "delivery-and-installation",
+      "requiresLocationBeforeBrowsing": true,
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122101": {
       "localities": [
@@ -269,7 +742,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122102": {
       "localities": [
@@ -283,8 +760,12 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities",
-      "requiresLocationBeforeBrowsing": true
+      "coverageStatus": "delivery-and-installation",
+      "requiresLocationBeforeBrowsing": true,
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     },
     "122505": {
       "localities": [
@@ -297,7 +778,11 @@
       "preliminaryOnly": true,
       "verified": true,
       "enabled": true,
-      "coverageStatus": "preliminary-city-localities"
+      "coverageStatus": "delivery-and-installation",
+      "region": "Haryana",
+      "city": "Gurugram",
+      "makeoverAvailable": true,
+      "makeover": "pending_confirmation"
     }
   },
   "excludedDistrictExamples": [
