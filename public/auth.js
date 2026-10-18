@@ -118,9 +118,9 @@ function renderView(view){
               <input type="radio" name="verifyMethod" value="email" checked>
               <span>Email OTP</span>
             </label>
-            <label class="auth-method-pill">
-              <input type="radio" name="verifyMethod" value="phone">
-              <span>Mobile OTP</span>
+            <label class="auth-method-pill disabled" title="Mobile OTP is currently unavailable in production. Please use Email OTP.">
+              <input type="radio" name="verifyMethod" value="phone" disabled>
+              <span>Mobile OTP <small style="font-size:10px;font-weight:400;opacity:0.8;">(Unavailable)</small></span>
             </label>
           </div>
         </label>

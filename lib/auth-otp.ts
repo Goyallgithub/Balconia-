@@ -290,6 +290,13 @@ export async function initiateOtpRegistration(params: {
   if (verifyMethod !== "email" && verifyMethod !== "phone") {
     return { success: false, error: "Please select either Email or Mobile verification.", status: 400 };
   }
+  if (verifyMethod === "phone" && !isTest) {
+    return {
+      success: false,
+      error: "Mobile OTP is currently unavailable for production. Please verify your account via Email OTP.",
+      status: 400,
+    };
+  }
 
   // 2. Prevent duplicate accounts if Supabase is configured
   if (supabaseConfigured()) {

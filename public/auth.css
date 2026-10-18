@@ -66,6 +66,7 @@ dialog.auth-dialog,
 .auth-method-pill{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border:1.5px solid #c7ccb5;border-radius:8px;background:#fffdf4;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s}
 .auth-method-pill:has(input:checked){border-color:#304c35;background:#304c35;color:#f9f0de}
 .auth-method-pill input{margin:0;accent-color:#304c35}
+.auth-method-pill.disabled, .auth-method-pill:has(input:disabled){opacity:0.45;cursor:not-allowed;pointer-events:none;background:#f2ede2;border-color:#d7d9cb;color:#85897e}
 .auth-otp-input{font-size:24px!important;text-align:center;letter-spacing:10px;font-weight:700;padding:12px!important}
 .auth-resend-row{display:flex;justify-content:space-between;align-items:center;margin:12px 0;font-size:12px}
 .auth-resend-btn{background:none;border:0;color:#304c35;text-decoration:underline;cursor:pointer;padding:0;font:inherit}
