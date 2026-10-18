@@ -371,10 +371,9 @@ function checkout(){
             setTimeout(()=>URL.revokeObjectURL(url),2000);
             btn.textContent='Download PDF Receipt';
             btn.disabled=false;
-          }catch(err){
-            btn.textContent='Download PDF Receipt';
-            btn.disabled=false;
-            window.open(`/api/orders/${encodeURIComponent(data.id)}/receipt?download=1`,'_blank');
+            const token=await window.BalconiaAuth?.getAccessToken?.().catch(()=>'');
+            const tokenParam=token?`&token=${encodeURIComponent(token)}`:'';
+            window.open(`/api/orders/${encodeURIComponent(data.id)}/receipt?download=1${tokenParam}`,'_blank');
           }
         };
       }catch(error){

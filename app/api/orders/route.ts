@@ -240,6 +240,7 @@ export async function POST(request: Request) {
         shipping_status: record.shippingStatus,
       });
       if (error) throw new Error(error.message);
+      saveJsonRecord("orders", id, record).catch(() => {});
     } else {
       await saveJsonRecord("orders", id, record);
     }
