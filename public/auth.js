@@ -45,8 +45,6 @@ async function refreshIfNeeded(){
 let pendingToken=null;
 let pendingDestination='';
 let pendingMethod='email';
-let pendingNotice='';
-let pendingDevOtp='';
 let resendTimer=null;
 let resendCountdown=0;
 
@@ -158,8 +156,6 @@ function renderView(view){
         pendingToken=data.verificationToken;
         pendingDestination=data.destination;
         pendingMethod=data.verifyMethod;
-        pendingNotice=data.sandboxNotice||'';
-        pendingDevOtp=data.devOtp||'';
         resendCountdown=data.cooldownSeconds||60;
         renderView('otp');
       }catch(ex){
@@ -171,10 +167,6 @@ function renderView(view){
   } else if(view==='otp'){
     container.innerHTML=`<h2 id="auth-title">Verify ${pendingMethod==='email'?'Email':'Mobile'}</h2>
       <p class="auth-lede">We sent a 6-digit verification code to <strong>${esc(pendingDestination)}</strong>.</p>
-      ${pendingNotice?`<div style="background:#eaf3ec;border:1px solid #c9decb;color:#204a25;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.45;margin:12px 0;">
-        <strong>Verification code:</strong> <span style="font-size:16px;font-weight:700;letter-spacing:2px;margin-left:4px;">${esc(pendingDevOtp||'')}</span>
-        <div style="font-size:11px;opacity:0.85;margin-top:4px;">${esc(pendingNotice)}</div>
-      </div>`:''}
       <form id="auth-otp-form">
         <label>Enter 6-digit code
           <input name="otp" class="auth-otp-input" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code" placeholder="······" autofocus>
@@ -186,11 +178,6 @@ function renderView(view){
         <p id="auth-error" role="alert"></p>
         <button type="submit" class="button" id="auth-otp-submit">Verify &amp; Create account ↗</button>
       </form>`;
-
-    if(pendingDevOtp){
-      const otpInp=container.querySelector('input[name="otp"]');
-      if(otpInp)otpInp.value=pendingDevOtp;
-    }
 
     document.getElementById('auth-edit-details').onclick=()=>renderView('signup');
 
@@ -221,13 +208,7 @@ function renderView(view){
         });
         const data=await r.json();
         if(!r.ok)throw new Error(data.error||'Failed to resend code.');
-        pendingNotice=data.sandboxNotice||'';
-        pendingDevOtp=data.devOtp||'';
         resendCountdown=data.cooldownSeconds||60;
-        if(pendingDevOtp){
-          const otpInp=container.querySelector('input[name="otp"]');
-          if(otpInp)otpInp.value=pendingDevOtp;
-        }
         updateCountdown();
         resendTimer=setInterval(updateCountdown,1000);
       }catch(ex){

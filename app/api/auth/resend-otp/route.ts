@@ -26,7 +26,6 @@ export async function POST(request: Request) {
         success: true,
         destination: result.destination,
         cooldownSeconds: result.cooldownSeconds,
-        ...(result.sandboxNotice ? { sandboxNotice: result.sandboxNotice, devOtp: result.otp } : {}),
         ...(isTest && result.otp ? { debugOtp: result.otp } : {}),
       },
       { status: 200 }

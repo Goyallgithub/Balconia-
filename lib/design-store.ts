@@ -119,7 +119,7 @@ export async function countActiveAndCompletedGenerationsForUser(
   if (supabaseConfigured()) {
     const { data, error } = await supabaseAdmin()
       .from("balcony_designs")
-      .select("id, status, created_at, updated_at")
+      .select("id, status, created_at")
       .eq("owner_id", ownerId)
       .in("status", ["complete", "generating"]);
     if (error) throw new Error(error.message);
@@ -130,7 +130,7 @@ export async function countActiveAndCompletedGenerationsForUser(
       if (row.status === "complete") {
         completed++;
       } else if (row.status === "generating") {
-        const time = new Date(String(row.updated_at || row.created_at)).getTime();
+        const time = new Date(String(row.created_at)).getTime();
         if (now - time < staleThreshold) {
           active++;
         }

@@ -36,7 +36,6 @@ export async function POST(request: Request) {
         verifyMethod,
         cooldownSeconds: result.cooldownSeconds,
         expiresInSeconds: result.expiresInSeconds,
-        ...(result.sandboxNotice ? { sandboxNotice: result.sandboxNotice, devOtp: result.otp } : {}),
         ...(isTest && result.otp ? { debugOtp: result.otp } : {}),
       },
       { status: 200 }

@@ -75,7 +75,7 @@ export async function deliverOtp(params: {
 
     const isTestDomain = destination.endsWith("@example.com") || destination.endsWith("@test.com");
 
-    // 1. First priority: Direct SMTP (Google Workspace / Gmail / custom host)
+    // 1. Direct SMTP (Google Workspace / Gmail / custom host)
     const smtpUser = process.env.SMTP_USER?.trim() || process.env.GMAIL_USER?.trim();
     const smtpPass = process.env.SMTP_PASS?.trim() || process.env.GMAIL_APP_PASSWORD?.trim();
     const smtpHost = process.env.SMTP_HOST?.trim() || "smtp.gmail.com";
@@ -115,25 +115,20 @@ export async function deliverOtp(params: {
         return { delivered: true };
       }
       console.warn(`[OTP Email] Resend delivery to ${destination} failed (${res.reason}).`);
-      console.log(`[DEV/SANDBOX EMAIL OTP] Code ${otp} generated for ${destination}`);
       return {
-        delivered: true,
-        sandboxNotice: `Note: Resend test domain (${from}) restricts delivery to registered team inboxes. Verification code for testing: ${otp}`,
-        devOtp: otp,
-      };
-    } else {
-      console.log(`[EMAIL OTP] Code ${otp} generated for ${destination}`);
-      return {
-        delivered: true,
-        sandboxNotice: `Verification code for testing: ${otp}`,
-        devOtp: otp,
+        delivered: false,
+        error: `Email delivery failed (${res.reason}). Please try again or select Mobile OTP.`,
       };
     }
+
+    return {
+      delivered: false,
+      error: "Email delivery service is currently unavailable. Please verify your configuration.",
+    };
   } else {
-    // Phone OTP via Twilio
+    // Phone OTP via Twilio Verify or Indian SMS gateways
     const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID?.trim();
     const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN?.trim();
-    const twilioFrom = process.env.TWILIO_PHONE_NUMBER?.trim();
     const twilioVerifySid = process.env.TWILIO_VERIFY_SERVICE_SID?.trim();
 
     // Format destination to E.164 (+91... for India if 10 digits)
@@ -144,79 +139,101 @@ export async function deliverOtp(params: {
       ? `+91${cleanPhone}`
       : `+${cleanPhone}`;
 
-    if (twilioAccountSid && twilioAuthToken) {
-      const authHeader = `Basic ${Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString("base64")}`;
-
-      // 1. If Twilio Verify Service SID is configured, prioritize Twilio Verify (works without custom templates/virtual numbers)
-      if (twilioVerifySid) {
-        try {
-          const verifyRes = await fetch(`https://verify.twilio.com/v2/Services/${twilioVerifySid}/Verifications`, {
-            method: "POST",
-            headers: {
-              Authorization: authHeader,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              To: formattedPhone,
-              Channel: "sms",
-            }),
-          });
-          const verifyData = await verifyRes.json();
-          if (verifyRes.ok && verifyData.status === "pending") {
-            console.log(`[Twilio Verify] Real verification code sent to ${formattedPhone} via service ${twilioVerifySid}`);
-            return { delivered: true };
-          } else {
-            console.warn(`[Twilio Verify] Request to ${formattedPhone} returned ${verifyData.code}: ${verifyData.message}`);
-            return {
-              delivered: true,
-              sandboxNotice: `Twilio Verify notice: ${verifyData.message}. Verification code for testing: ${otp}`,
-              devOtp: otp,
-            };
-          }
-        } catch (err: any) {
-          console.warn(`[Twilio Verify] Network error: ${err.message}`);
+    // 1. Twilio Verify (Official global OTP service)
+    if (twilioAccountSid && twilioAuthToken && twilioVerifySid) {
+      try {
+        const authHeader = `Basic ${Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString("base64")}`;
+        const verifyRes = await fetch(`https://verify.twilio.com/v2/Services/${twilioVerifySid}/Verifications`, {
+          method: "POST",
+          headers: {
+            Authorization: authHeader,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            To: formattedPhone,
+            Channel: "sms",
+          }),
+        });
+        const verifyData = await verifyRes.json();
+        if (verifyRes.ok && verifyData.status === "pending") {
+          console.log(`[Twilio Verify] Real verification code sent to ${formattedPhone} via service ${twilioVerifySid}`);
+          return { delivered: true };
+        } else {
+          console.warn(`[Twilio Verify] Request to ${formattedPhone} returned ${verifyData.code}: ${verifyData.message}`);
+          const isTrialRestriction = verifyData.code === 21608;
+          const msg = isTrialRestriction
+            ? "Twilio trial restriction: During trial, this mobile number must be added as a verified tester in your Twilio Console (or upgrade your Twilio account). Alternatively, please select Email OTP."
+            : `Failed to deliver SMS: ${verifyData.message || "Twilio error"}. Please check your number or select Email OTP.`;
+          return {
+            delivered: false,
+            error: msg,
+          };
         }
-      }
-
-      // 2. If a Twilio Phone Number is configured, use Programmable Messaging API as fallback
-      if (twilioFrom) {
-        try {
-          const smsRes = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`, {
-            method: "POST",
-            headers: {
-              Authorization: authHeader,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              To: formattedPhone,
-              From: twilioFrom,
-              Body: `Your Balconia verification code is: ${otp}. Valid for 10 minutes.`,
-            }),
-          });
-          const smsData = await smsRes.json();
-          if (smsRes.ok) {
-            console.log(`[Twilio SMS] Real verification code sent to ${formattedPhone}`);
-            return { delivered: true };
-          } else {
-            console.warn(`[Twilio SMS] Delivery to ${formattedPhone} failed (${smsData.code}: ${smsData.message})`);
-            return {
-              delivered: true,
-              sandboxNotice: `Twilio notice: ${smsData.message}. Verification code for testing: ${otp}`,
-              devOtp: otp,
-            };
-          }
-        } catch (err: any) {
-          console.warn(`[Twilio SMS] Network error: ${err.message}`);
-        }
+      } catch (err: any) {
+        console.warn(`[Twilio Verify] Network error: ${err.message}`);
+        return {
+          delivered: false,
+          error: `SMS service connection error (${err.message}). Please select Email OTP instead.`,
+        };
       }
     }
 
-    // Fallback simulation for local/testing
-    console.log(`[SMS OTP] Code ${otp} generated for ${destination}`);
+    // 2. Fast2SMS (Indian SMS Gateway)
+    const fast2smsKey = process.env.FAST2SMS_API_KEY?.trim();
+    if (fast2smsKey) {
+      try {
+        const tenDigit = cleanPhone.slice(-10);
+        const f2sRes = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+          method: "POST",
+          headers: {
+            authorization: fast2smsKey,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            variables_values: otp,
+            route: "otp",
+            numbers: tenDigit,
+          }),
+        });
+        const f2sData = await f2sRes.json();
+        if (f2sData.return === true) {
+          console.log(`[Fast2SMS] Real OTP sent to ${tenDigit}`);
+          return { delivered: true };
+        } else {
+          return {
+            delivered: false,
+            error: `Fast2SMS error: ${f2sData.message?.[0] || f2sData.message || "Failed to deliver SMS"}.`,
+          };
+        }
+      } catch (err: any) {
+        return { delivered: false, error: `Fast2SMS network error: ${err.message}` };
+      }
+    }
+
+    // 3. 2Factor (Indian SMS Gateway)
+    const twoFactorKey = process.env.TWOFACTOR_API_KEY?.trim();
+    if (twoFactorKey) {
+      try {
+        const tenDigit = cleanPhone.slice(-10);
+        const tfRes = await fetch(`https://2factor.in/API/V1/${twoFactorKey}/SMS/${tenDigit}/${otp}/BALCONIA`);
+        const tfData = await tfRes.json();
+        if (tfData.Status === "Success") {
+          console.log(`[2Factor] Real OTP sent to ${tenDigit}`);
+          return { delivered: true };
+        } else {
+          return {
+            delivered: false,
+            error: `2Factor error: ${tfData.Details || "Failed to deliver SMS"}.`,
+          };
+        }
+      } catch (err: any) {
+        return { delivered: false, error: `2Factor network error: ${err.message}` };
+      }
+    }
+
     return {
-      delivered: true,
-      sandboxNotice: `SMS OTP simulated for ${destination}. Verification code: ${otp}`,
-      devOtp: otp,
+      delivered: false,
+      error: "SMS gateway is not configured for mobile verification. Please select Email OTP to receive your verification code.",
     };
   }
 }
@@ -327,10 +344,10 @@ export async function initiateOtpRegistration(params: {
     isTest,
   });
 
-  if (!delivery.delivered && delivery.error) {
+  if (!delivery.delivered) {
     return {
       success: false,
-      error: `Could not send verification code: ${delivery.error}`,
+      error: delivery.error || "Could not send verification code. Please check your number or try Email OTP.",
       status: 502,
     };
   }
@@ -362,8 +379,7 @@ export async function initiateOtpRegistration(params: {
     destination: maskDestination(destination, verifyMethod),
     cooldownSeconds: 60,
     expiresInSeconds: 600,
-    otp: isTest ? otp : delivery.devOtp,
-    sandboxNotice: delivery.sandboxNotice,
+    otp: isTest ? otp : undefined,
     status: 200,
   };
 }
@@ -586,12 +602,19 @@ export async function resendOtp(params: {
     isTest: params.isTest,
   });
 
+  if (!delivery.delivered) {
+    return {
+      success: false,
+      error: delivery.error || "Could not resend verification code. Please try Email OTP.",
+      status: 502,
+    };
+  }
+
   return {
     success: true,
     destination: maskDestination(destination, record.verifyMethod),
     cooldownSeconds: 60,
-    otp: params.isTest ? newOtp : delivery.devOtp,
-    sandboxNotice: delivery.sandboxNotice,
+    otp: params.isTest ? newOtp : undefined,
     status: 200,
   };
 }
