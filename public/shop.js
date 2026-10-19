@@ -187,12 +187,70 @@ function deliveryNote(){
 }
 function modelOptions(p){if(!p.catalogueGroup)return '';const group=products.filter(x=>x.catalogueGroup===p.catalogueGroup),sizes=[...new Set(group.map(x=>x.variantSize))],colours=[...new Set(group.map(x=>x.colour))];return `<div class="planter-options"><label>Size<select data-planter-size>${sizes.map(x=>`<option ${x===p.variantSize?'selected':''}>${esc(x)}</option>`).join('')}</select></label><label>Finish<select data-planter-colour>${colours.map(x=>`<option ${x===p.colour?'selected':''}>${esc(x)}</option>`).join('')}</select></label></div><p class="note">Vendor SKU: ${esc(p.vendorSku)} · Plants are not included.</p>`;}
 function shop(){const getCategory=()=>{const c=new URLSearchParams(location.search).get('category')||'all';return names[c]?c:'all';};let category=getCategory();const draw=()=>{$('#products').classList.toggle('underfoot-grid',category==='flooring');let items=products.filter(p=>(category==='all'||p.category===category)&&(p.name+' '+p.description).toLowerCase().includes($('#search').value.toLowerCase()));const seen=new Set();items=items.filter(p=>{const key=p.catalogueGroup||p.id;if(seen.has(key))return false;seen.add(key);return true;});if($('#sort').value!=='featured')items.sort((a,b)=>a.pricePaise===null&&b.pricePaise===null?0:a.pricePaise===null?1:b.pricePaise===null?-1:$('#sort').value==='low'?a.pricePaise-b.pricePaise:b.pricePaise-a.pricePaise);$('#result-count').textContent=`${items.length} thoughtful pieces · Prices in INR`;$('#products').innerHTML=items.length?items.map(p=>`<article class="product-card"><button class="photo-button" data-view="${esc(p.id)}" aria-label="View ${esc(p.name)}">${image(p)}<span class="tag">${esc(names[p.category])}</span></button><h3><a href="#${esc(p.id)}" data-view="${esc(p.id)}">${esc(p.modelName||p.name)}</a></h3><p class="description">${esc(p.description.split('\n')[0])}</p>${p.catalogueGroup?'<p class="note">From</p>':''}${price(p)}${fulfilmentLabel(p)}<p class="note">${plantNote(p)}</p>${p.catalogueGroup?`<button class="btn" data-view="${esc(p.id)}">Choose size & finish</button>`:p.pricePaise===null?`<button class="btn secondary" data-view="${esc(p.id)}">See details · price pending</button>`:bagControls(p.id)}</article>`).join(''):'<p>No products found. Try another search.</p>';};const tabs=()=>{$('#categories').innerHTML=Object.entries({all:'All pieces',...names}).map(([k,v])=>`<button data-category="${k}" class="${category===k?'active':''}" aria-pressed="${category===k}">${v}</button>`).join('');};tabs();draw();$('#categories').onclick=e=>{const b=e.target.closest('[data-category]');if(!b)return;const nextCat=b.dataset.category;if(nextCat===category)return;category=nextCat;const u=new URL(location.href);if(category==='all'){u.searchParams.delete('category');}else{u.searchParams.set('category',category);}history.pushState({category},'',u.pathname+u.search+u.hash);tabs();draw();};window.addEventListener('popstate',()=>{category=getCategory();tabs();draw();});$('#search').oninput=draw;$('#sort').onchange=draw;$('#products').onclick=e=>{const a=e.target.closest('[data-add]'),q=e.target.closest('[data-qty]'),v=e.target.closest('[data-view]');if(a){add(a.dataset.add);draw();}else if(q){const id=q.dataset.qty;setQty(id,cartQty(id)+Number(q.dataset.delta));draw();}if(v){e.preventDefault();detail(v.dataset.view);}};$('.close').onclick=()=>$('#product-dialog').close();}
-function detail(id){if(document.body.classList.contains('pin-locked'))return;const p=products.find(p=>p.id===id);if(!p)return;$('#product-detail').innerHTML=`<div class="detail-layout"><div><div class="gallery-main">${image(p)}</div><div class="thumbs">${p.images.map((a,i)=>`<button data-image="${i}" class="${i===0?'selected':''}" aria-label="View photo ${i+1}">${image(p,i)}</button>`).join('')}</div></div><div class="detail-copy"><span class="mini-label">${esc(names[p.category])} · ${esc(p.id)}</span><h2>${esc(p.modelName||p.name)}</h2>${modelOptions(p)}${price(p)}${fulfilmentLabel(p)}${!p.mrpPaise&&p.pricePaise!==null?'<p class="note">MRP: Not supplied · Discount: Not supplied. Selling price shown above.</p>':''}${p.cataloguePreview?'<p class="note">First photo: high-resolution AI-generated planter-only illustration based on the catalogue. Other photos are original catalogue previews. Photos show finish examples, not a separate photograph for each size and colour.</p>':''}${p.aiEnhanced?'<p class="note">AI-enhanced product illustrations based on the catalogue. Fine pattern details may vary; confirm the supplied carpet before dispatch.</p>':''}${p.thumbnailOnly?'<p class="note">Catalogue preview enlarged for browsing. Full-resolution photographs are still awaited.</p>':''}${p.plantOnly?'<p class="delivery-note">Price is for the plant in its supplied nursery pot/bag. The decorative planter shown in styled photos is not included. Plant size and appearance may vary; confirm planter options before dispatch.</p>':''}<p class="full-description">${esc(p.description)}</p>${p.size?`<p><strong>Dimensions:</strong> ${esc(p.size)}</p>`:''}${p.light?`<p><strong>Light:</strong> ${esc(p.light)}</p>`:''}<p class="note">Styled catalogue photographs are illustrative. Confirm finish, dimensions and included items before dispatch.</p>${p.pricePaise!==null?bagControls(p.id,{withPrice:true}):'<p class="delivery-note">Price and availability need confirmation. This item cannot be ordered yet.</p>'}<p class="delivery-status" data-delivery-status></p>${deliveryNote()}</div></div>`;$('#product-detail').onclick=e=>{const b=e.target.closest('[data-image]'),a=e.target.closest('[data-add]'),q=e.target.closest('[data-qty]');if(b){$('.gallery-main').innerHTML=image(p,Number(b.dataset.image));document.querySelectorAll('.thumbs button').forEach(x=>x.classList.toggle('selected',x===b));}if(a){add(a.dataset.add);detail(id);}if(q){setQty(q.dataset.qty,cartQty(q.dataset.qty)+Number(q.dataset.delta));detail(id);}};$('#product-detail').onchange=e=>{if(!e.target.matches('[data-planter-size],[data-planter-colour]'))return;const size=$('[data-planter-size]').value,colour=$('[data-planter-colour]').value,selector=e.target.matches('[data-planter-size]')?'[data-planter-size]':'[data-planter-colour]',variant=products.find(x=>x.catalogueGroup===p.catalogueGroup&&x.variantSize===size&&x.colour===colour);if(variant){detail(variant.id);$(selector)?.focus();}};window.BalconiaDelivery?.refresh();if(!$('#product-dialog').open)$('#product-dialog').showModal();}
+function ensureProductDialog(){
+  let dialog=$('#product-dialog');
+  if(!dialog){
+    dialog=document.createElement('dialog');
+    dialog.id='product-dialog';
+    dialog.innerHTML='<button class="close" type="button" aria-label="Close product">×</button><div id="product-detail"></div>';
+    document.body.appendChild(dialog);
+  }
+  if(!dialog._boundCloseSync){
+    dialog._boundCloseSync=true;
+    dialog.addEventListener('close',()=>{
+      if(document.body.dataset.page==='cart')cartPage();
+      if(document.body.dataset.page==='checkout'){
+        const s=$('.panel.summary');if(s)s.outerHTML=summary('<a href="cart.html">Edit your bag</a>');
+      }
+    });
+  }
+  return dialog;
+}
+function detail(id){
+  if(document.body.classList.contains('pin-locked'))return;
+  const p=products.find(p=>p.id===id);
+  if(!p)return;
+  const dialog=ensureProductDialog();
+  $('#product-detail').innerHTML=`<div class="detail-layout"><div><div class="gallery-main">${image(p)}</div><div class="thumbs">${p.images.map((a,i)=>`<button data-image="${i}" class="${i===0?'selected':''}" aria-label="View photo ${i+1}">${image(p,i)}</button>`).join('')}</div></div><div class="detail-copy"><span class="mini-label">${esc(names[p.category])} · ${esc(p.id)}</span><h2>${esc(p.modelName||p.name)}</h2>${modelOptions(p)}${price(p)}${fulfilmentLabel(p)}${!p.mrpPaise&&p.pricePaise!==null?'<p class="note">MRP: Not supplied · Discount: Not supplied. Selling price shown above.</p>':''}${p.cataloguePreview?'<p class="note">First photo: high-resolution AI-generated planter-only illustration based on the catalogue. Other photos are original catalogue previews. Photos show finish examples, not a separate photograph for each size and colour.</p>':''}${p.aiEnhanced?'<p class="note">AI-enhanced product illustrations based on the catalogue. Fine pattern details may vary; confirm the supplied carpet before dispatch.</p>':''}${p.thumbnailOnly?'<p class="note">Catalogue preview enlarged for browsing. Full-resolution photographs are still awaited.</p>':''}${p.plantOnly?'<p class="delivery-note">Price is for the plant in its supplied nursery pot/bag. The decorative planter shown in styled photos is not included. Plant size and appearance may vary; confirm planter options before dispatch.</p>':''}<p class="full-description">${esc(p.description)}</p>${p.size?`<p><strong>Dimensions:</strong> ${esc(p.size)}</p>`:''}${p.light?`<p><strong>Light:</strong> ${esc(p.light)}</p>`:''}<p class="note">Styled catalogue photographs are illustrative. Confirm finish, dimensions and included items before dispatch.</p>${p.pricePaise!==null?bagControls(p.id,{withPrice:true}):'<p class="delivery-note">Price and availability need confirmation. This item cannot be ordered yet.</p>'}<p class="catalogue-backlink"><a href="catalogue.html#${esc(p.id)}" target="_blank" rel="noopener">Open full piece in shop catalogue ↗</a></p><p class="delivery-status" data-delivery-status></p>${deliveryNote()}</div></div>`;
+  $('#product-detail').onclick=e=>{
+    const b=e.target.closest('[data-image]'),a=e.target.closest('[data-add]'),q=e.target.closest('[data-qty]');
+    if(b){
+      $('.gallery-main').innerHTML=image(p,Number(b.dataset.image));
+      document.querySelectorAll('.thumbs button').forEach(x=>x.classList.toggle('selected',x===b));
+    }
+    if(a){
+      add(a.dataset.add);
+      detail(id);
+      if(document.body.dataset.page==='cart')cartPage();
+      if(document.body.dataset.page==='checkout'){
+        const s=$('.panel.summary');if(s)s.outerHTML=summary('<a href="cart.html">Edit your bag</a>');
+      }
+    }
+    if(q){
+      setQty(q.dataset.qty,cartQty(q.dataset.qty)+Number(q.dataset.delta));
+      detail(id);
+      if(document.body.dataset.page==='cart')cartPage();
+      if(document.body.dataset.page==='checkout'){
+        const s=$('.panel.summary');if(s)s.outerHTML=summary('<a href="cart.html">Edit your bag</a>');
+      }
+    }
+  };
+  $('#product-detail').onchange=e=>{
+    if(!e.target.matches('[data-planter-size],[data-planter-colour]'))return;
+    const size=$('[data-planter-size]').value,colour=$('[data-planter-colour]').value,selector=e.target.matches('[data-planter-size]')?'[data-planter-size]':'[data-planter-colour]',variant=products.find(x=>x.catalogueGroup===p.catalogueGroup&&x.variantSize===size&&x.colour===colour);
+    if(variant){
+      detail(variant.id);
+      $(selector)?.focus();
+    }
+  };
+  window.BalconiaDelivery?.refresh();
+  if(!dialog.open)dialog.showModal();
+}
 function summary(button=''){
   const fees=orderFees();
   const shipRow=`<div class="total-row shipping-row ${fees.shipFree?'is-free':''}"><span>Shipping</span><strong>${fees.shipFree?'FREE':money(fees.shippingPaise)}</strong></div>`;
   const installRow=fees.showInstall?`<div class="total-row shipping-row ${fees.installFree?'is-free':''}"><span>Installation</span><strong>${fees.installFree?'FREE':money(fees.installationPaise)}</strong></div>`:'';
-  return `<aside class="panel summary"><h2>Your order</h2>${lines().map(x=>`<div class="total-row"><span>${esc(x.p.name)} × ${x.quantity}</span><strong>${money(x.p.pricePaise*x.quantity)}</strong></div>`).join('')}<hr><div class="total-row"><strong>Product subtotal</strong><strong>${money(subtotal())}</strong></div>${shipRow}${installRow}<div class="total-row"><strong>Estimated total</strong><strong>${money(fees.grandTotalPaise)}</strong></div>${couponBox()}<p class="shipping-threshold note">With <strong>BALCONIA</strong>: free shipping ₹500+ · free installation ₹1,000+.</p>${deliveryNote()}${button}</aside>`;
+  return `<aside class="panel summary"><h2>Your order</h2>${lines().map(x=>`<div class="total-row"><span><a class="summary-product-link" href="catalogue.html#${esc(x.p.id)}" data-view="${esc(x.p.id)}" target="_blank" title="View photos and specifications for ${esc(x.p.name)}">${esc(x.p.name)}</a> × ${x.quantity}</span><strong>${money(x.p.pricePaise*x.quantity)}</strong></div>`).join('')}<hr><div class="total-row"><strong>Product subtotal</strong><strong>${money(subtotal())}</strong></div>${shipRow}${installRow}<div class="total-row"><strong>Estimated total</strong><strong>${money(fees.grandTotalPaise)}</strong></div>${couponBox()}<p class="shipping-threshold note">With <strong>BALCONIA</strong>: free shipping ₹500+ · free installation ₹1,000+.</p>${deliveryNote()}${button}</aside>`;
 }
 function cartPage(){
   if(!lines().length){$('#cart-content').innerHTML='<div class="empty"><h2>Your bag is waiting for a little magic.</h2><a class="btn" href="catalogue.html">Explore the shop</a></div>';return;}
@@ -211,7 +269,24 @@ function cartPage(){
         <strong>${couponActive()?'Diwali offer':'Use code BALCONIA'}</strong>
         <p>${esc(fees.note)}</p>
       </div>
-      ${lines().map(x=>`<article class="cart-item">${image(x.p)}<div><h3>${esc(x.p.name)}</h3><p class="note">${plantNote(x.p)}</p><div class="quantity"><button data-qty="${esc(x.id)}" data-delta="-1" aria-label="Reduce quantity">−</button><span>${x.quantity}</span><button data-qty="${esc(x.id)}" data-delta="1" aria-label="Increase quantity">+</button></div> <button class="remove" data-remove="${esc(x.id)}">Remove</button></div><strong>${money(x.p.pricePaise*x.quantity)}</strong></article>`).join('')}
+      ${lines().map(x=>`<article class="cart-item">
+        <a class="cart-item-photo" href="catalogue.html#${esc(x.p.id)}" data-view="${esc(x.p.id)}" aria-label="View photos and specifications for ${esc(x.p.name)}" target="_blank">${image(x.p)}</a>
+        <div>
+          <h3><a class="cart-item-title-link" href="catalogue.html#${esc(x.p.id)}" data-view="${esc(x.p.id)}" target="_blank">${esc(x.p.name)}</a></h3>
+          <button type="button" class="cart-item-view-btn" data-view="${esc(x.p.id)}" aria-label="View photos of ${esc(x.p.name)}">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" width="13" height="13"><circle cx="10" cy="11" r="3"/><path d="M4 6h3l1.5-2h3L13 6h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg>
+            <span>View photos &amp; details ↗</span>
+          </button>
+          <p class="note">${plantNote(x.p)}</p>
+          <div class="quantity">
+            <button data-qty="${esc(x.id)}" data-delta="-1" aria-label="Reduce quantity">−</button>
+            <span>${x.quantity}</span>
+            <button data-qty="${esc(x.id)}" data-delta="1" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="remove" data-remove="${esc(x.id)}">Remove</button>
+        </div>
+        <strong>${money(x.p.pricePaise*x.quantity)}</strong>
+      </article>`).join('')}
       <p><a href="catalogue.html">← Continue exploring</a></p>
     </section>${summary('<a class="btn" href="checkout.html">Checkout · Cash on Delivery</a>')}</div>
     <div class="cart-sticky-bar">
@@ -224,6 +299,12 @@ function cartPage(){
   bindCoupon(cartPage);
   $('#cart-content').onclick=e=>{
     if(e.target.closest('#apply-coupon')||e.target.closest('#coupon-code'))return;
+    const v=e.target.closest('[data-view]');
+    if(v && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0){
+      e.preventDefault();
+      detail(v.dataset.view);
+      return;
+    }
     const q=e.target.closest('[data-qty]'),r=e.target.closest('[data-remove]');
     if(q){const x=cart.find(x=>x.id===q.dataset.qty);x.quantity=Math.max(1,Math.min(20,x.quantity+Number(q.dataset.delta)));}
     else if(r)cart=cart.filter(x=>x.id!==r.dataset.remove);
@@ -405,4 +486,30 @@ function checkout(){
   };
   renderCheckout();
 }
-save();try{await window.BalconiaDelivery.ready;const r=await fetch('shop-data.json?v=catalogue-20261016',{cache:'no-cache'});if(!r.ok)throw Error();products=await r.json();cart=cart.filter(x=>products.some(p=>p.id===x.id&&p.pricePaise!==null));save();({shop,cart:cartPage,checkout})[document.body.dataset.page]();if(document.body.dataset.page==='shop'&&products.some(p=>p.id===location.hash.slice(1)))detail(location.hash.slice(1));}catch{const container=$('#products')||$('#cart-content')||$('#checkout-content');container.innerHTML='<p class="error">We could not load the shop. Please check your connection and <a href="">try again</a>.</p>';}
+save();try{await window.BalconiaDelivery.ready;const r=await fetch('shop-data.json?v=catalogue-20261016',{cache:'no-cache'});if(!r.ok)throw Error();products=await r.json();cart=cart.filter(x=>products.some(p=>p.id===x.id&&p.pricePaise!==null));save();({shop,cart:cartPage,checkout})[document.body.dataset.page]();if(products.some(p=>p.id===location.hash.slice(1)))detail(location.hash.slice(1));}catch{const container=$('#products')||$('#cart-content')||$('#checkout-content');container.innerHTML='<p class="error">We could not load the shop. Please check your connection and <a href="">try again</a>.</p>';}
+
+window.addEventListener('hashchange',()=>{
+  const h=location.hash.slice(1);
+  if(h&&products.some(p=>p.id===h))detail(h);
+});
+
+document.addEventListener('click',e=>{
+  const v=e.target.closest('[data-view]');
+  if(v&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&e.button===0){
+    e.preventDefault();
+    detail(v.dataset.view);
+    return;
+  }
+  const closeBtn=e.target.closest('#product-dialog .close,[data-dialog-close]');
+  if(closeBtn){
+    e.preventDefault();
+    const d=$('#product-dialog');
+    if(d&&d.open)d.close();
+    return;
+  }
+  const dialog=$('#product-dialog');
+  if(dialog&&dialog.open&&e.target===dialog){
+    dialog.close();
+    return;
+  }
+});

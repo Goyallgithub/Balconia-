@@ -292,3 +292,114 @@ label input[type="radio"], label input[type="checkbox"] {
   }
 }
 
+/* Cart & Checkout Product Links and Photo Modals */
+.cart-item-photo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:90px;
+  height:90px;
+  background:#eeeade;
+  border-radius:12px;
+  overflow:hidden;
+  padding:4px;
+  text-decoration:none;
+  border:1px solid #e1ddcf;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+  flex-shrink:0;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.cart-item-photo:hover,
+.cart-item-photo:focus-visible{
+  transform:scale(1.04);
+  border-color:var(--green);
+  box-shadow:0 4px 14px rgba(40,60,46,.16);
+  outline:none;
+}
+.cart-item-photo img{
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  display:block;
+}
+.cart-item h3{
+  margin:0 0 2px 0;
+}
+.cart-item-title-link{
+  color:var(--ink);
+  text-decoration:none;
+  font-weight:600;
+  line-height:1.35;
+  display:inline;
+  transition:color .15s ease;
+}
+.cart-item-title-link:hover,
+.cart-item-title-link:focus-visible{
+  color:var(--green);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.cart-item-view-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:11.5px;
+  font-weight:600;
+  color:#3b5639;
+  background:rgba(56,76,54,.08);
+  border:1px solid rgba(56,76,54,.18);
+  border-radius:12px;
+  padding:3px 9px;
+  margin:4px 0 6px 0;
+  cursor:pointer;
+  line-height:1.2;
+  transition:all .15s ease;
+  vertical-align:middle;
+}
+.cart-item-view-btn:hover,
+.cart-item-view-btn:focus-visible{
+  background:var(--green);
+  color:#ffffff;
+  border-color:var(--green);
+}
+.cart-item-view-btn svg{
+  flex-shrink:0;
+}
+.summary-product-link{
+  color:inherit;
+  text-decoration:underline;
+  text-decoration-color:rgba(56,76,54,.35);
+  text-underline-offset:3px;
+  transition:color .15s ease,text-decoration-color .15s ease;
+}
+.summary-product-link:hover,
+.summary-product-link:focus-visible{
+  color:var(--green);
+  text-decoration-color:var(--green);
+}
+.catalogue-backlink{
+  margin-top:14px;
+  padding-top:10px;
+  border-top:1px dashed var(--line);
+  font-size:12.5px;
+}
+.catalogue-backlink a{
+  color:var(--green);
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+#product-dialog{
+  z-index:99999;
+}
+
+@media(max-width:500px){
+  .cart-item-photo{
+    width:65px;
+    height:65px;
+    border-radius:10px;
+  }
+}
