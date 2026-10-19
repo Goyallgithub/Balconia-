@@ -1,4 +1,32 @@
 .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+.header-shop-link{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:#304c35;
+  color:#fffaf0;
+  font-size:12.5px;
+  font-weight:700;
+  text-decoration:none;
+  line-height:1.2;
+  white-space:nowrap;
+  cursor:pointer;
+  box-sizing:border-box;
+  transition:all .18s ease;
+}
+.header-shop-link:hover,
+.header-shop-link:focus-visible{
+  background:#1e3323;
+  color:#ffffff;
+  transform:translateY(-1px);
+}
+.header-shop-link svg{
+  width:13px;
+  height:13px;
+  flex-shrink:0;
+}
 header .cart-link{
   border:0;
   padding:10px 14px;
@@ -137,9 +165,20 @@ header .delivery-location{margin-left:0}
     order:2!important;
     display:contents!important;
   }
-  .account-chip{
+  .header-shop-link{
     order:2!important;
     margin-left:auto!important;
+    padding:7px 12px!important;
+    font-size:11.5px!important;
+    white-space:nowrap!important;
+    border-radius:999px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:4px!important;
+  }
+  .account-chip{
+    order:3!important;
+    margin-left:6px!important;
     display:flex!important;
     align-items:center!important;
   }
@@ -151,14 +190,14 @@ header .delivery-location{margin-left:0}
     border-radius:999px!important;
   }
   header .cart-link, .shop-header .cart-link{
-    order:3!important;
+    order:4!important;
     padding:7px 12px!important;
-    margin-left:8px!important;
+    margin-left:6px!important;
     white-space:nowrap!important;
     border-radius:999px!important;
   }
   header .delivery-location, .shop-header .delivery-location{
-    order:4!important;
+    order:5!important;
     flex-basis:100%!important;
     width:100%!important;
     margin:4px 0 0!important;
