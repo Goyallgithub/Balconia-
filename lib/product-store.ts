@@ -64,6 +64,9 @@ export interface DbProductRow {
   updated_at?: string;
 }
 
+const STORAGE_BUCKET = "balcony-designs";
+const STORAGE_FILE_PATH = "catalog/product-overrides.json";
+
 export function dbRowToProduct(row: DbProductRow): Product {
   let images: ProductImage[] = [];
   if (Array.isArray(row.images)) {
@@ -143,9 +146,81 @@ export function invalidateProductsCache() {
 }
 
 /**
+ * Storage Fallback: Read overrides from Supabase Storage
+ */
+async function loadOverridesFromStorage(): Promise<Record<string, Product>> {
+  if (!supabaseConfigured()) return {};
+  try {
+    const { data, error } = await supabaseAdmin()
+      .storage.from(STORAGE_BUCKET)
+      .download(STORAGE_FILE_PATH);
+
+    if (!error && data) {
+      const text = await data.text();
+      return JSON.parse(text);
+    }
+  } catch (err) {
+    // Expected if bucket or file doesn't exist yet
+  }
+  return {};
+}
+
+/**
+ * Storage Fallback: Save override to Supabase Storage
+ */
+async function saveOverrideToStorage(product: Product): Promise<void> {
+  if (!supabaseConfigured()) return;
+  try {
+    const current = await loadOverridesFromStorage();
+    current[product.id] = product;
+
+    const buffer = Buffer.from(JSON.stringify(current, null, 2), "utf8");
+    await supabaseAdmin()
+      .storage.from(STORAGE_BUCKET)
+      .upload(STORAGE_FILE_PATH, buffer, {
+        contentType: "application/json",
+        upsert: true,
+      });
+  } catch (err) {
+    console.warn("Could not save to Supabase storage fallback:", err);
+  }
+}
+
+/**
+ * Storage Fallback: Drop override from Supabase Storage
+ */
+async function deleteOverrideFromStorage(
+  id: string,
+  permanent: boolean
+): Promise<void> {
+  if (!supabaseConfigured()) return;
+  try {
+    const current = await loadOverridesFromStorage();
+    if (permanent) {
+      delete current[id];
+    } else if (current[id]) {
+      current[id].isActive = false;
+    } else {
+      current[id] = { id, isActive: false } as Product;
+    }
+
+    const buffer = Buffer.from(JSON.stringify(current, null, 2), "utf8");
+    await supabaseAdmin()
+      .storage.from(STORAGE_BUCKET)
+      .upload(STORAGE_FILE_PATH, buffer, {
+        contentType: "application/json",
+        upsert: true,
+      });
+  } catch (err) {
+    console.warn("Could not delete from Supabase storage fallback:", err);
+  }
+}
+
+/**
  * Fetch all products.
- * If Supabase is configured and has products, returns from Supabase.
- * Otherwise, falls back seamlessly to the bundled shop-data.
+ * Priority 1: Supabase Postgres 'products' table.
+ * Priority 2: Supabase Storage JSON 'catalog/product-overrides.json' + bundled shop-data.
+ * Priority 3: Local bundled shop-data.
  */
 export async function getAllProducts(options?: {
   includeInactive?: boolean;
@@ -163,7 +238,7 @@ export async function getAllProducts(options?: {
     return cachedProducts.filter((p) => p.isActive !== false);
   }
 
-  // 1. Try Supabase
+  // 1. Try Supabase Postgres table
   if (supabaseConfigured()) {
     try {
       let query = supabaseAdmin()
@@ -199,13 +274,13 @@ export async function getAllProducts(options?: {
           }
         }
       }
-    } catch (err) {
-      console.warn("Supabase products fetch failed; using local fallback:", err);
+    } catch {
+      // Postgres table query failed or table doesn't exist yet; proceed to storage fallback
     }
   }
 
-  // 2. Local fallback from shop-data.json
-  const defaultList = (localProductsDefault as unknown as Product[]).map(
+  // 2. Base list from local shop-data.json
+  const defaultList: Product[] = (localProductsDefault as unknown as Product[]).map(
     (item, index) => ({
       ...item,
       isActive: item.isActive !== false,
@@ -213,13 +288,37 @@ export async function getAllProducts(options?: {
     })
   );
 
-  cachedProducts = defaultList;
+  // 3. Merge Supabase Storage overrides if available
+  let merged = defaultList;
+  if (supabaseConfigured()) {
+    try {
+      const overrides = await loadOverridesFromStorage();
+      const overrideKeys = Object.keys(overrides);
+      if (overrideKeys.length > 0) {
+        const listMap = new Map<string, Product>();
+        defaultList.forEach((p) => listMap.set(p.id, p));
+
+        for (const [id, overrideProduct] of Object.entries(overrides)) {
+          if (listMap.has(id)) {
+            listMap.set(id, { ...listMap.get(id)!, ...overrideProduct });
+          } else {
+            listMap.set(id, overrideProduct);
+          }
+        }
+        merged = Array.from(listMap.values());
+      }
+    } catch {
+      // Storage fallback failed; continue with base
+    }
+  }
+
+  cachedProducts = merged;
   lastCacheTime = now;
 
   if (includeInactive) {
-    return defaultList;
+    return merged;
   }
-  return defaultList.filter((p) => p.isActive !== false);
+  return merged.filter((p) => p.isActive !== false);
 }
 
 /**
@@ -240,7 +339,7 @@ export async function getProductById(id: string): Promise<Product | null> {
         return dbRowToProduct(data as DbProductRow);
       }
     } catch {
-      // Fall through to memory/local
+      // Fall through to memory/storage
     }
   }
 
@@ -258,28 +357,30 @@ export async function saveProduct(product: Product): Promise<Product> {
     updatedAt: new Date().toISOString(),
   };
 
-  // 1. Save to Supabase if configured
-  if (supabaseConfigured()) {
-    const row = productToDbRow(updated);
-    const { error } = await supabaseAdmin()
-      .from("products")
-      .upsert(row, { onConflict: "id" });
+  let savedInPostgres = false;
 
-    if (error) {
-      if (
-        error.message.includes("Could not find the table") ||
-        error.message.includes("schema cache") ||
-        error.message.includes("relation \"public.products\" does not exist")
-      ) {
-        throw new Error(
-          "Table 'public.products' does not exist in Supabase yet. Please run the SQL schema in your Supabase SQL Editor once."
-        );
+  // 1. Try Supabase Postgres table
+  if (supabaseConfigured()) {
+    try {
+      const row = productToDbRow(updated);
+      const { error } = await supabaseAdmin()
+        .from("products")
+        .upsert(row, { onConflict: "id" });
+
+      if (!error) {
+        savedInPostgres = true;
       }
-      throw new Error(`Failed to save product in database: ${error.message}`);
+    } catch {
+      savedInPostgres = false;
+    }
+
+    // 2. If Postgres table did not save (e.g. table not created yet), save to Supabase Storage fallback
+    if (!savedInPostgres) {
+      await saveOverrideToStorage(updated);
     }
   }
 
-  // 2. Also keep local files in sync if filesystem is writable
+  // 3. Keep local files in sync if filesystem is writable
   await syncLocalProduct(updated);
 
   invalidateProductsCache();
@@ -293,19 +394,29 @@ export async function dropProduct(
   id: string,
   permanent: boolean = false
 ): Promise<{ success: boolean; dropped: boolean; permanent: boolean }> {
+  let droppedInPostgres = false;
+
   if (supabaseConfigured()) {
-    if (permanent) {
-      const { error } = await supabaseAdmin()
-        .from("products")
-        .delete()
-        .eq("id", id);
-      if (error) throw new Error(`Failed to delete product: ${error.message}`);
-    } else {
-      const { error } = await supabaseAdmin()
-        .from("products")
-        .update({ is_active: false, updated_at: new Date().toISOString() })
-        .eq("id", id);
-      if (error) throw new Error(`Failed to drop product: ${error.message}`);
+    try {
+      if (permanent) {
+        const { error } = await supabaseAdmin()
+          .from("products")
+          .delete()
+          .eq("id", id);
+        if (!error) droppedInPostgres = true;
+      } else {
+        const { error } = await supabaseAdmin()
+          .from("products")
+          .update({ is_active: false, updated_at: new Date().toISOString() })
+          .eq("id", id);
+        if (!error) droppedInPostgres = true;
+      }
+    } catch {
+      droppedInPostgres = false;
+    }
+
+    if (!droppedInPostgres) {
+      await deleteOverrideFromStorage(id, permanent);
     }
   }
 
@@ -327,33 +438,40 @@ export async function seedProductsToSupabase(): Promise<{
     return { seeded: 0, error: "Supabase is not configured." };
   }
 
-  const { count } = await supabaseAdmin()
-    .from("products")
-    .select("id", { count: "exact", head: true });
+  try {
+    const { count, error: countErr } = await supabaseAdmin()
+      .from("products")
+      .select("id", { count: "exact", head: true });
 
-  if (count && count > 0) {
-    return { seeded: count };
-  }
-
-  const defaultList = localProductsDefault as unknown as Product[];
-  const rows = defaultList.map((p, index) =>
-    productToDbRow({ ...p, sortOrder: index })
-  );
-
-  // Batch insert 50 at a time
-  const batchSize = 50;
-  let totalSeeded = 0;
-  for (let i = 0; i < rows.length; i += batchSize) {
-    const chunk = rows.slice(i, i + batchSize);
-    const { error } = await supabaseAdmin().from("products").upsert(chunk);
-    if (error) {
-      return { seeded: totalSeeded, error: error.message };
+    if (countErr) {
+      return { seeded: 0, error: countErr.message };
     }
-    totalSeeded += chunk.length;
-  }
 
-  invalidateProductsCache();
-  return { seeded: totalSeeded };
+    if (count && count > 0) {
+      return { seeded: count };
+    }
+
+    const defaultList = localProductsDefault as unknown as Product[];
+    const rows = defaultList.map((p, index) =>
+      productToDbRow({ ...p, sortOrder: index })
+    );
+
+    const batchSize = 50;
+    let totalSeeded = 0;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const chunk = rows.slice(i, i + batchSize);
+      const { error } = await supabaseAdmin().from("products").upsert(chunk);
+      if (error) {
+        return { seeded: totalSeeded, error: error.message };
+      }
+      totalSeeded += chunk.length;
+    }
+
+    invalidateProductsCache();
+    return { seeded: totalSeeded };
+  } catch (err: any) {
+    return { seeded: 0, error: err?.message || "Seeding failed" };
+  }
 }
 
 /**
@@ -386,7 +504,6 @@ async function syncLocalProduct(product: Product) {
     }
   } catch (err) {
     // Non-fatal if filesystem is read-only (e.g. on Vercel)
-    console.warn("Could not sync local JSON files (expected in serverless):", err);
   }
 }
 
@@ -418,6 +535,6 @@ async function removeLocalProduct(id: string, permanent: boolean) {
       await fs.writeFile(filePath, JSON.stringify(list, null, 2), "utf8");
     }
   } catch (err) {
-    console.warn("Could not remove from local JSON files:", err);
+    // Non-fatal if filesystem is read-only
   }
 }
