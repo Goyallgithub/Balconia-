@@ -184,6 +184,21 @@ export async function getAllProducts(options?: {
         }
         return mapped;
       }
+
+      // If table exists but has 0 products, automatically seed it
+      if (!error && Array.isArray(data) && data.length === 0) {
+        console.log("Supabase products table exists but is empty. Auto-seeding 452 products...");
+        const seedResult = await seedProductsToSupabase();
+        if (seedResult.seeded > 0) {
+          const resAfterSeed = await query;
+          if (resAfterSeed.data && resAfterSeed.data.length > 0) {
+            const mapped = (resAfterSeed.data as DbProductRow[]).map(dbRowToProduct);
+            cachedProducts = mapped;
+            lastCacheTime = now;
+            return mapped;
+          }
+        }
+      }
     } catch (err) {
       console.warn("Supabase products fetch failed; using local fallback:", err);
     }
@@ -251,6 +266,15 @@ export async function saveProduct(product: Product): Promise<Product> {
       .upsert(row, { onConflict: "id" });
 
     if (error) {
+      if (
+        error.message.includes("Could not find the table") ||
+        error.message.includes("schema cache") ||
+        error.message.includes("relation \"public.products\" does not exist")
+      ) {
+        throw new Error(
+          "Table 'public.products' does not exist in Supabase yet. Please run the SQL schema in your Supabase SQL Editor once."
+        );
+      }
       throw new Error(`Failed to save product in database: ${error.message}`);
     }
   }
