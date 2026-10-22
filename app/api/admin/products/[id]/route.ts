@@ -8,6 +8,14 @@ interface RouteParams {
   params: { id: string };
 }
 
+const noCacheHeaders = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+  Pragma: "no-cache",
+  Expires: "0",
+};
+
 /** Get product details for editing */
 export async function GET(request: Request, { params }: RouteParams) {
   const isAuth = await isRequestAuthorizedAdmin(request);
@@ -21,7 +29,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ product });
+  return NextResponse.json({ product }, { headers: noCacheHeaders });
 }
 
 /** Update product details / prices / photos / status */
@@ -98,12 +106,12 @@ export async function PUT(request: Request, { params }: RouteParams) {
     };
 
     const saved = await saveProduct(updatedProduct);
-    return NextResponse.json({ ok: true, product: saved });
+    return NextResponse.json({ ok: true, product: saved }, { headers: noCacheHeaders });
   } catch (error: any) {
     console.error(`PUT /api/admin/products/${id} error:`, error);
     return NextResponse.json(
       { error: error.message || "Failed to update product" },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
@@ -118,7 +126,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   const { id } = params;
   const existing = await getProductById(id);
   if (!existing) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    return NextResponse.json({ error: "Product not found" }, { status: 404, headers: noCacheHeaders });
   }
 
   const { searchParams } = new URL(request.url);
@@ -130,7 +138,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       ok: true,
       message: permanent ? `Product ${id} permanently deleted` : `Product ${id} dropped and archived`,
       ...result,
-    });
+    }, { headers: noCacheHeaders });
   } catch (error: any) {
     console.error(`DELETE /api/admin/products/${id} error:`, error);
     return NextResponse.json(

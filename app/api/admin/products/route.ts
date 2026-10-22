@@ -13,7 +13,18 @@ export async function GET(request: Request) {
 
   try {
     const list = await getAllProducts({ includeInactive: true, forceRefresh: true });
-    return NextResponse.json({ products: list, total: list.length });
+    return NextResponse.json(
+      { products: list, total: list.length },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          "CDN-Cache-Control": "no-store",
+          "Vercel-CDN-Cache-Control": "no-store",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error) {
     console.error("GET /api/admin/products error:", error);
     return NextResponse.json(

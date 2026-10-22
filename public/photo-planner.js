@@ -48,7 +48,7 @@ function renderExtraChips(){
 }
 
 async function loadCatalog(){
-  let r;try{r=await fetch('/api/products',{cache:'no-cache'});if(!r.ok)throw Error();}catch{r=await fetch('shop-data.json?v=prices-20261012');}
+  let r;try{r=await fetch('/api/products?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error();}catch{r=await fetch('shop-data.json?v=prices-20261012',{cache:'no-store'});}
   if(!r.ok)throw Error('Could not load the catalogue.');
   const all=await r.json();
   const seen=new Set();

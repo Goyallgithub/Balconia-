@@ -135,14 +135,9 @@ export function productToDbRow(p: Product): DbProductRow {
   };
 }
 
-// In-memory cache for fast edge and server requests
-let cachedProducts: Product[] | null = null;
-let lastCacheTime = 0;
-const CACHE_TTL_MS = 10000; // 10 seconds
-
+// In-memory cache removed in serverless environment to guarantee instant consistency across lambdas
 export function invalidateProductsCache() {
-  cachedProducts = null;
-  lastCacheTime = 0;
+  // No-op for backwards compatibility
 }
 
 /**
@@ -153,7 +148,7 @@ async function loadOverridesFromStorage(): Promise<Record<string, Product>> {
   try {
     const { data, error } = await supabaseAdmin()
       .storage.from(STORAGE_BUCKET)
-      .download(STORAGE_FILE_PATH);
+      .download(STORAGE_FILE_PATH, { cacheNonce: String(Date.now()) });
 
     if (!error && data) {
       const text = await data.text();
@@ -179,6 +174,7 @@ async function saveOverrideToStorage(product: Product): Promise<void> {
       .storage.from(STORAGE_BUCKET)
       .upload(STORAGE_FILE_PATH, buffer, {
         contentType: "application/json",
+        cacheControl: "0",
         upsert: true,
       });
   } catch (err) {
@@ -209,6 +205,7 @@ async function deleteOverrideFromStorage(
       .storage.from(STORAGE_BUCKET)
       .upload(STORAGE_FILE_PATH, buffer, {
         contentType: "application/json",
+        cacheControl: "0",
         upsert: true,
       });
   } catch (err) {
@@ -227,37 +224,21 @@ export async function getAllProducts(options?: {
   forceRefresh?: boolean;
 }): Promise<Product[]> {
   const includeInactive = Boolean(options?.includeInactive);
-  const now = Date.now();
-
-  if (
-    !options?.forceRefresh &&
-    cachedProducts &&
-    now - lastCacheTime < CACHE_TTL_MS
-  ) {
-    if (includeInactive) return cachedProducts;
-    return cachedProducts.filter((p) => p.isActive !== false);
-  }
 
   // 1. Try Supabase Postgres table
   if (supabaseConfigured()) {
     try {
-      let query = supabaseAdmin()
+      const { data, error } = await supabaseAdmin()
         .from("products")
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!includeInactive) {
-        query = query.eq("is_active", true);
-      }
-
-      const { data, error } = await query;
       if (!error && Array.isArray(data) && data.length > 0) {
         const mapped = (data as DbProductRow[]).map(dbRowToProduct);
         if (includeInactive) {
-          cachedProducts = mapped;
-          lastCacheTime = now;
+          return mapped;
         }
-        return mapped;
+        return mapped.filter((p) => p.isActive !== false);
       }
 
       // If table exists but has 0 products, automatically seed it
@@ -265,12 +246,14 @@ export async function getAllProducts(options?: {
         console.log("Supabase products table exists but is empty. Auto-seeding 452 products...");
         const seedResult = await seedProductsToSupabase();
         if (seedResult.seeded > 0) {
-          const resAfterSeed = await query;
+          const resAfterSeed = await supabaseAdmin()
+            .from("products")
+            .select("*")
+            .order("sort_order", { ascending: true });
           if (resAfterSeed.data && resAfterSeed.data.length > 0) {
             const mapped = (resAfterSeed.data as DbProductRow[]).map(dbRowToProduct);
-            cachedProducts = mapped;
-            lastCacheTime = now;
-            return mapped;
+            if (includeInactive) return mapped;
+            return mapped.filter((p) => p.isActive !== false);
           }
         }
       }
@@ -311,9 +294,6 @@ export async function getAllProducts(options?: {
       // Storage fallback failed; continue with base
     }
   }
-
-  cachedProducts = merged;
-  lastCacheTime = now;
 
   if (includeInactive) {
     return merged;
@@ -357,27 +337,19 @@ export async function saveProduct(product: Product): Promise<Product> {
     updatedAt: new Date().toISOString(),
   };
 
-  let savedInPostgres = false;
-
-  // 1. Try Supabase Postgres table
   if (supabaseConfigured()) {
+    // 1. Try Supabase Postgres table
     try {
       const row = productToDbRow(updated);
-      const { error } = await supabaseAdmin()
+      await supabaseAdmin()
         .from("products")
         .upsert(row, { onConflict: "id" });
-
-      if (!error) {
-        savedInPostgres = true;
-      }
-    } catch {
-      savedInPostgres = false;
+    } catch (err) {
+      console.warn("Could not upsert product to Postgres table:", err);
     }
 
-    // 2. If Postgres table did not save (e.g. table not created yet), save to Supabase Storage fallback
-    if (!savedInPostgres) {
-      await saveOverrideToStorage(updated);
-    }
+    // 2. ALWAYS sync to Supabase Storage fallback so both layers remain 100% identical
+    await saveOverrideToStorage(updated);
   }
 
   // 3. Keep local files in sync if filesystem is writable
@@ -394,30 +366,22 @@ export async function dropProduct(
   id: string,
   permanent: boolean = false
 ): Promise<{ success: boolean; dropped: boolean; permanent: boolean }> {
-  let droppedInPostgres = false;
-
   if (supabaseConfigured()) {
     try {
       if (permanent) {
-        const { error } = await supabaseAdmin()
-          .from("products")
-          .delete()
-          .eq("id", id);
-        if (!error) droppedInPostgres = true;
+        await supabaseAdmin().from("products").delete().eq("id", id);
       } else {
-        const { error } = await supabaseAdmin()
+        await supabaseAdmin()
           .from("products")
           .update({ is_active: false, updated_at: new Date().toISOString() })
           .eq("id", id);
-        if (!error) droppedInPostgres = true;
       }
-    } catch {
-      droppedInPostgres = false;
+    } catch (err) {
+      console.warn("Could not drop product from Postgres table:", err);
     }
 
-    if (!droppedInPostgres) {
-      await deleteOverrideFromStorage(id, permanent);
-    }
+    // ALWAYS sync to Supabase Storage fallback
+    await deleteOverrideFromStorage(id, permanent);
   }
 
   // Sync to local files
