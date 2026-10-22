@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import products from "@/lib/shop-data.json";
+import { getAllProducts } from "@/lib/product-store";
 import { validateOrder } from "@/lib/order-service.mjs";
 import {
   checkPostal,
@@ -110,6 +110,7 @@ export async function POST(request: Request) {
       }
     }
 
+    const products = await getAllProducts();
     const order = validateOrder(body, products);
     const rawType = String(body.fulfilmentType || "").trim().toLowerCase();
     const isInstallation =

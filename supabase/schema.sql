@@ -147,3 +147,51 @@ create policy "design_images_delete_own" on storage.objects
     bucket_id = 'balcony-designs'
     and auth.uid()::text = (storage.foldername(name))[1]
   );
+
+-- Products Catalog Table
+create table if not exists public.products (
+  id text primary key,
+  name text not null,
+  model_name text,
+  category text not null,
+  detail text,
+  description text not null default '',
+  size text default '',
+  light text default '',
+  price_paise integer,
+  mrp_paise integer,
+  discount integer,
+  images jsonb not null default '[]'::jsonb,
+  plant_only boolean not null default false,
+  planter_only boolean not null default false,
+  catalogue_preview boolean not null default false,
+  ai_enhanced boolean not null default false,
+  thumbnail_only boolean not null default false,
+  catalogue_group text,
+  fulfilment_mode text not null default 'delivery-only',
+  requires_installation boolean not null default false,
+  is_active boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists products_category_idx on public.products (category) where is_active = true;
+create index if not exists products_active_sort_idx on public.products (is_active, sort_order asc);
+
+alter table public.products enable row level security;
+
+-- Public can view active products
+drop policy if exists "products_select_active" on public.products;
+create policy "products_select_active" on public.products
+  for select using (is_active = true);
+
+-- Storage bucket for product images (public read)
+insert into storage.buckets (id, name, public)
+values ('product-media', 'product-media', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "product_media_public_read" on storage.objects;
+create policy "product_media_public_read" on storage.objects
+  for select using (bucket_id = 'product-media');
+

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard · Balconia</title>
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body class="admin-body">
+
+  <!-- AUTHENTICATION SCREEN (Shown when not logged in) -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="assets/brand-logo-transparent.webp" alt="Balconia" width="140" height="65">
+      </div>
+      <h2>Store Admin</h2>
+      <p class="auth-desc">Enter your admin passphrase or secret key to manage catalogue products and prices.</p>
+      <form id="auth-form" class="auth-form">
+        <div class="form-group">
+          <label for="admin-passphrase">Admin Passphrase</label>
+          <div class="input-password-wrap">
+            <input type="password" id="admin-passphrase" placeholder="Enter admin passphrase" required autofocus autocomplete="current-password">
+            <button type="button" id="toggle-password" class="btn-toggle-eye" aria-label="Show password">👁</button>
+          </div>
+        </div>
+        <button type="submit" id="auth-submit-btn" class="btn primary full-width">Sign in to Dashboard</button>
+        <p id="auth-error" class="error-msg" style="display:none;"></p>
+      </form>
+      <div class="auth-footer">
+        <a href="index.html" class="back-link">← Back to Balconia</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN DASHBOARD (Shown when authenticated) -->
+  <div id="dashboard-app" class="dashboard-app" style="display:none;">
+
+    <!-- TOP NAVIGATION -->
+    <header class="admin-header">
+      <div class="header-left">
+        <a href="index.html" class="admin-brand">
+          <img src="assets/brand-logo-transparent.webp" alt="Balconia" width="120" height="55">
+        </a>
+        <div class="admin-title-badge">
+          <h1>Product Catalogue</h1>
+          <span class="badge admin-pill">Admin Dashboard</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <a href="catalogue.html" target="_blank" rel="noopener" class="btn secondary small">
+          <span>View Live Shop</span> ↗
+        </a>
+        <button type="button" id="logout-btn" class="btn outline small">Log Out</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- SUMMARY METRICS -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Live on Website</span>
+          <strong id="metric-live" class="metric-value">—</strong>
+          <span class="metric-sub">Active & searchable</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Dropped / Inactive</span>
+          <strong id="metric-dropped" class="metric-value">—</strong>
+          <span class="metric-sub">Hidden from catalogue</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Total Catalog Items</span>
+          <strong id="metric-total" class="metric-value">—</strong>
+          <span class="metric-sub">In database</span>
+        </div>
+        <div class="metric-card action-card">
+          <button type="button" id="open-add-modal-btn" class="btn primary add-btn">
+            <span class="plus-icon">+</span>
+            <span>Add New Product</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SEARCH, FILTERS & CONTROLS -->
+      <section class="toolbar-section">
+        <div class="toolbar-search">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="product-search" placeholder="Search by product name, ID (e.g. FUR-001, P001)..." aria-label="Search products">
+        </div>
+        <div class="toolbar-actions">
+          <select id="sort-select" aria-label="Sort products">
+            <option value="featured">Default Order</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- CATEGORY PILLS -->
+      <nav class="category-tabs" id="category-tabs" aria-label="Filter by category">
+        <button class="cat-tab active" data-cat="all">All Products <span class="tab-count" id="count-all"></span></button>
+        <button class="cat-tab" data-cat="plants">Plants & Pots <span class="tab-count" id="count-plants"></span></button>
+        <button class="cat-tab" data-cat="lights">Warm Light <span class="tab-count" id="count-lights"></span></button>
+        <button class="cat-tab" data-cat="flooring">Underfoot <span class="tab-count" id="count-flooring"></span></button>
+        <button class="cat-tab" data-cat="furniture">Comfort <span class="tab-count" id="count-furniture"></span></button>
+        <button class="cat-tab" data-cat="decor">Finishing Touches <span class="tab-count" id="count-decor"></span></button>
+        <button class="cat-tab dropped-tab" data-cat="dropped">Dropped Items <span class="tab-count" id="count-dropped"></span></button>
+      </nav>
+
+      <!-- PRODUCT LIST TABLE -->
+      <div class="table-container">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">Photo</th>
+              <th style="width: 110px;">ID</th>
+              <th>Product Name & Specs</th>
+              <th style="width: 140px;">Category</th>
+              <th style="width: 130px;">Selling Price</th>
+              <th style="width: 120px;">MRP</th>
+              <th style="width: 100px;">Discount</th>
+              <th style="width: 110px;">Status</th>
+              <th style="width: 150px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <tr>
+              <td colspan="9" class="loading-cell">Loading catalogue products...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PRODUCT EDIT / ADD MODAL -->
+  <dialog id="product-modal" class="product-modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Edit Product</h2>
+      <button type="button" class="modal-close" id="modal-close-btn" aria-label="Close dialog">×</button>
+    </div>
+    <form id="product-form" class="modal-body">
+      <input type="hidden" id="form-mode" value="edit">
+
+      <div class="form-grid">
+
+        <!-- Identification -->
+        <div class="form-group">
+          <label for="form-id">Product ID <span class="req">*</span></label>
+          <input type="text" id="form-id" placeholder="e.g. FUR-020, P030" required>
+          <small class="field-hint">Unique identifier used in catalogue, cart, and orders.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="form-category">Category <span class="req">*</span></label>
+          <select id="form-category" required>
+            <option value="plants">Plants & Pots (Greenery)</option>
+            <option value="lights">Warm Light (Lighting)</option>
+            <option value="flooring">Underfoot (Rugs & Carpets)</option>
+            <option value="furniture">Comfort (Furniture & Seating)</option>
+            <option value="decor">Finishing Touches (Decor & Accents)</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-name">Product Name <span class="req">*</span></label>
+          <input type="text" id="form-name" placeholder="Full descriptive product title" required>
+        </div>
+
+        <!-- Pricing Section -->
+        <div class="pricing-card full-width">
+          <div class="pricing-card-header">
+            <strong>Product Pricing</strong>
+            <span class="price-calculator-note">Enter amounts in Indian Rupees (₹). Discounts update automatically.</span>
+          </div>
+          <div class="pricing-inputs-grid">
+            <div class="form-group">
+              <label for="form-price-rupees">Selling Price (₹) <span class="req">*</span></label>
+              <div class="currency-input-wrap">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="form-price-rupees" step="1" min="0" placeholder="e.g. 2600" required>
+              </div>
+              <small class="field-hint">Stored as <code id="calc-price-paise">0</code> paise</small>
+            </div>
+
+            <div class="form-group">
+              <label for="form-mrp-rupees">MRP (₹)</label>
+              <div class="currency-input-wrap">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="form-mrp-rupees" step="1" min="0" placeholder="e.g. 3500">
+              </div>
+              <small class="field-hint">Stored as <code id="calc-mrp-paise">0</code> paise</small>
+            </div>
+
+            <div class="form-group">
+              <label for="form-discount">Discount Badge (%)</label>
+              <div class="discount-badge-preview">
+                <input type="number" id="form-discount" min="0" max="100" placeholder="30">
+                <span id="discount-badge-chip" class="discount-chip">30% off</span>
+              </div>
+              <small class="field-hint">Auto-calculated or manually override</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Media / Photos Section -->
+        <div class="photo-card full-width">
+          <label>Product Photography</label>
+          <div class="photo-uploader-row">
+            <div class="photo-preview-wrap" id="photo-preview-wrap">
+              <img id="form-preview-img" src="assets/brand-logo-transparent.webp" alt="Preview">
+            </div>
+            <div class="photo-inputs">
+              <div class="form-group">
+                <label for="form-image-url">Image URL or Local Asset Path</label>
+                <input type="text" id="form-image-url" placeholder="e.g. assets/shop/P001-1.webp or https://...">
+              </div>
+              <div class="upload-btn-wrap">
+                <label for="photo-file-input" class="btn secondary small upload-file-btn">
+                  <span>📷 Upload New Image File</span>
+                </label>
+                <input type="file" id="photo-file-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+                <span id="upload-status" class="upload-status-text"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="form-group">
+          <label for="form-size">Dimensions / Size</label>
+          <input type="text" id="form-size" placeholder="e.g. 5 × 7 ft or 30 in height x 18 in width">
+        </div>
+
+        <div class="form-group">
+          <label for="form-light">Light / Care Requirements</label>
+          <input type="text" id="form-light" placeholder="e.g. Bright indirect light; sheltered outdoor">
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-description">Description & Features</label>
+          <textarea id="form-description" rows="4" placeholder="Detailed product story, key features, and maintenance tips..."></textarea>
+        </div>
+
+        <!-- Status & Flags -->
+        <div class="flags-card full-width">
+          <label class="checkbox-label">
+            <input type="checkbox" id="form-is-active" checked>
+            <span><strong>Active on Website</strong> (Uncheck to drop/hide this item from the public catalogue)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="form-plant-only">
+            <span><strong>Plant Only</strong> (Notice: Decorative pot shown in photo extra)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="form-requires-install">
+            <span><strong>Requires Installation</strong> (Only available with professional installation)</span>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="delete-product-btn" class="btn danger" style="display:none;">Drop Item</button>
+        <div class="modal-footer-right">
+          <button type="button" id="modal-cancel-btn" class="btn outline">Cancel</button>
+          <button type="submit" id="modal-save-btn" class="btn primary">Save Product</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- CONFIRM DROP / DELETE MODAL -->
+  <dialog id="confirm-modal" class="confirm-modal">
+    <div class="confirm-body">
+      <h3>Drop Product from Catalogue?</h3>
+      <p id="confirm-msg">This item will be deactivated and hidden from the website catalogue and search. Historical orders and invoices will remain intact.</p>
+      <div class="confirm-actions">
+        <button type="button" id="confirm-cancel" class="btn outline">Cancel</button>
+        <button type="button" id="confirm-proceed-drop" class="btn danger">Hide from Website</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="admin-toast" role="status" aria-live="polite"></div>
+
+  <script src="admin.js?v=1"></script>
+</body>
+</html>

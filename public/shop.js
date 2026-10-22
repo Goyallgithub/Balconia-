@@ -486,7 +486,7 @@ function checkout(){
   };
   renderCheckout();
 }
-save();try{await window.BalconiaDelivery.ready;const r=await fetch('shop-data.json?v=catalogue-20261016',{cache:'no-cache'});if(!r.ok)throw Error();products=await r.json();cart=cart.filter(x=>products.some(p=>p.id===x.id&&p.pricePaise!==null));save();({shop,cart:cartPage,checkout})[document.body.dataset.page]();if(products.some(p=>p.id===location.hash.slice(1)))detail(location.hash.slice(1));}catch{const container=$('#products')||$('#cart-content')||$('#checkout-content');container.innerHTML='<p class="error">We could not load the shop. Please check your connection and <a href="">try again</a>.</p>';}
+save();try{await window.BalconiaDelivery.ready;let r;try{r=await fetch('/api/products',{cache:'no-cache'});if(!r.ok)throw Error();}catch{r=await fetch('shop-data.json?v=catalogue-20261016',{cache:'no-cache'});}if(!r.ok)throw Error();products=await r.json();cart=cart.filter(x=>products.some(p=>p.id===x.id&&p.pricePaise!==null));save();({shop,cart:cartPage,checkout})[document.body.dataset.page]();if(products.some(p=>p.id===location.hash.slice(1)))detail(location.hash.slice(1));}catch{const container=$('#products')||$('#cart-content')||$('#checkout-content');container.innerHTML='<p class="error">We could not load the shop. Please check your connection and <a href="">try again</a>.</p>';}
 
 window.addEventListener('hashchange',()=>{
   const h=location.hash.slice(1);

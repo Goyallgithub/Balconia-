@@ -12,6 +12,7 @@ const PAGE_REWRITES: Record<string, string> = {
   "/terms": "/terms.html",
   "/returns": "/returns.html",
   "/reviews": "/reviews.html",
+  "/admin": "/admin.html",
 };
 
 /** Serve the static frontend pages while preserving /api on Next. */
@@ -36,6 +37,7 @@ export const config = {
     "/terms",
     "/returns",
     "/reviews",
+    "/admin",
   ],
 };
 
