@@ -174,7 +174,7 @@
   async function loadProducts() {
     tbody.innerHTML = `<tr><td colspan="9" class="loading-cell">Loading catalogue products...</td></tr>`;
     try {
-      const res = await fetch("/api/admin/products", { cache: "no-store" });
+      const res = await fetch("/api/admin/products?t=" + Date.now(), { cache: "no-store" });
       if (res.status === 401) {
         showAuthScreen();
         return;

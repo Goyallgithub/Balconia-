@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const category = searchParams.get("category");
     const search = searchParams.get("q")?.toLowerCase();
 
-    let list = await getAllProducts({ includeInactive: false });
+    let list = await getAllProducts({ includeInactive: false, forceRefresh: true });
 
     if (category && category !== "all") {
       list = list.filter((p) => p.category.toLowerCase() === category.toLowerCase());
@@ -31,7 +31,8 @@ export async function GET(request: Request) {
     return NextResponse.json(list, {
       status: 200,
       headers: {
-        "Cache-Control": "public, max-age=15, s-maxage=30, stale-while-revalidate=120",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+        Pragma: "no-cache",
       },
     });
   } catch (error) {
