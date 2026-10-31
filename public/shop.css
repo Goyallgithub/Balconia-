@@ -403,3 +403,41 @@ label input[type="radio"], label input[type="checkbox"] {
     border-radius:10px;
   }
 }
+
+.price-sort{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:16px 0 4px;
+}
+.price-sort-label{
+  font-size:11px;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  font-weight:700;
+  color:#687957;
+  margin-right:4px;
+}
+.price-sort button{
+  border:1px solid #d6dccb;
+  background:#fffdf8;
+  color:#294333;
+  border-radius:999px;
+  padding:8px 16px;
+  min-height:44px;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:0 1px 0 #203c3008;
+}
+.price-sort button:hover{border-color:#203c30}
+.price-sort button.active{
+  background:#203c30;
+  color:#f8f5ed;
+  border-color:#203c30;
+}
+@media(max-width:500px){
+  .price-sort{gap:6px}
+  .price-sort-label{flex-basis:100%;margin:0 0 2px}
+  .price-sort button{flex:1;padding:8px 10px}
+}
